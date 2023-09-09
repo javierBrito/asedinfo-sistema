@@ -1,0 +1,92 @@
+<app-detail (close)="closeDetail($event)">
+    <h1 detail-title><strong>{{rolAplicacionEditar ?'EDITAR':'AGREGAR'}}</strong></h1>
+    <form detail-content [formGroup]="formRolAplicacion" (ngSubmit)="addRegistro()">
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="nombreAplicacion">{{'Aplicacion(*): '}}</label>
+                <input type="text" name="nombreAplicacion" formControlName="nombreAplicacion" class="form-control"
+                    id="nombreAplicacion" disabled>
+            </div>
+        </div>
+        <div class="col-12">
+            <label></label>
+        </div>
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="nombreRol"><b>{{'Nombre(*): '}}</b></label>
+                <input type="text" name="nombreRol" formControlName="nombreRol" class="form-control" id="nombreRol"
+                    oninput="nombreRol.value = nombreRol.value.toUpperCase()"
+                    [ngClass]="{'is-valid': nombreRolField?.dirty && !nombreRolField?.invalid && !nombreRolField?.errors, 'is-invalid': nombreRolField?.dirty && nombreRolField?.invalid && nombreRolField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="nombreRolField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="descripcionRol"><b>{{'Descripción(*): '}}</b></label>
+                <textarea type="text" name="descripcionRol" formControlName="descripcionRol" class="form-control" id="descripcionRol"
+                    oninput="descripcionRol.value = descripcionRol.value.toUpperCase()"
+                    [ngClass]="{'is-valid': descripcionRolField?.dirty && !descripcionRolField?.invalid && !descripcionRolField?.errors, 'is-invalid': descripcionRolField?.dirty && descripcionRolField?.invalid && descripcionRolField?.errors}">
+                    </textarea>
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="descripcionRolField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="enumRolSeguridad"><b>{{'Rol Seguridad(*):'}}</b></label>
+                <select class="custom-select" formControlName="enumRolSeguridad"
+                    name="enumRolSeguridad" id="enumRolSeguridad">
+                    <option [value]="''" selected>Seleccionar rol aplicación</option>
+                    <option *ngFor="let rolAplicacion of listaRolSeguridad" [ngValue]="rolAplicacion.nombre">
+                        {{rolAplicacion.nombre}}</option>
+                </select>
+                
+                <br>
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-block btn-primary" [disabled]="formRolAplicacion?.invalid">
+                    {{rolAplicacionEditar?'GUARDAR':'GUARDAR'}}</button>
+            </div>
+        </div>
+    </form>
+
+</app-detail>
+<ng-template #modal_success let-modal>
+
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Éxito'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{rolAplicacionEditar ?'Se ha actualizado el registro correctamente.':'Se ha agregado el registro correctamente.'}}
+    </div>
+
+</ng-template>
+<ng-template #modal_error let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Error'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{rolAplicacionEditar?'Ha habido un problema al actualizar el registro.':'Ha habido un problema al añadir el
+        registro.'}}
+    </div>
+</ng-template>

@@ -1,0 +1,110 @@
+<app-detail (close)="closeDetail($event)">
+    <h1 detail-title><strong>{{recursoEditar?'EDITAR':'AGREGAR'}}</strong></h1>
+    <form detail-content [formGroup]="formRecurso" (ngSubmit)="addRegistro()">
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="nombreAplicacion">{{'Aplicacion(*): '}}</label>
+                <input type="text" name="nombreAplicacion" formControlName="nombreAplicacion" class="form-control"
+                    id="nombreAplicacion" disabled>
+            </div>
+        </div>
+        <div class="col-12">
+            <label></label>
+        </div>
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="nombre">{{'Nombre(*): '}}</label>
+                <input type="text" name="nombre" formControlName="nombre" class="form-control" id="nombre"
+                    [ngClass]="{'is-valid': nombreField?.dirty && !nombreField?.invalid && !nombreField?.errors, 'is-invalid': nombreField?.dirty && nombreField?.invalid && nombreField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="nombreField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="descripcion">{{'Descripción(*): '}}</label>
+                <input type="text" name="descripcion" formControlName="descripcion" class="form-control" id="descripcion"
+                    [ngClass]="{'is-valid': descripcionField?.dirty && !descripcionField?.invalid && !descripcionField?.errors, 'is-invalid': descripcionField?.dirty && descripcionField?.invalid && descripcionField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="descripcionField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="url">{{'Url(*): '}}</label>
+                <input type="text" name="url" formControlName="url" class="form-control" id="url"
+                    [ngClass]="{'is-valid': urlField?.dirty && !urlField?.invalid && !urlField?.errors, 'is-invalid': urlField?.dirty && urlField?.invalid && urlField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="urlField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="nivel">{{'Nivel(*): rango 1...2'}}</label>
+                <input type="number" name="nivel" formControlName="nivel" class="form-control"
+                    id="nivel" placeholder="9" step="1" min="1" max="5"
+                    [ngClass]="{'is-valid': nivelField?.dirty && !nivelField?.invalid && !nivelField?.errors, 'is-invalid': nivelField?.dirty && nivelField?.invalid && nivelField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="nivelField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="recursoPadre">{{'Recurso Padre(*):'}}</label>
+                <select [compareWith]="compararRecursoPadre" class="custom-select" formControlName="recursoPadre"
+                    name="recursoPadre" id="recursoPadre">
+                    <option [value]="''" selected>Seleccionar recurso padre</option>
+                    <option *ngFor="let recursoPadre of listaRecursoPadre" [ngValue]="recursoPadre">
+                        {{recursoPadre.nombre}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-block btn-primary" [disabled]="formRecurso?.invalid">
+                    {{recursoEditar?'GUARDAR':'GUARDAR'}}</button>
+            </div>
+        </div>
+    </form>
+
+</app-detail>
+<ng-template #modal_success let-modal>
+
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Éxito'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{recursoEditar?'Se ha actualizado el registro correctamente.':'Se ha agregado el registro correctamente.'}}
+    </div>
+
+</ng-template>
+<ng-template #modal_error let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Error'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{recursoEditar?'Ha habido un problema al actualizar el registro.':'Ha habido un problema al agregar el registro.'}}
+    </div>
+</ng-template>

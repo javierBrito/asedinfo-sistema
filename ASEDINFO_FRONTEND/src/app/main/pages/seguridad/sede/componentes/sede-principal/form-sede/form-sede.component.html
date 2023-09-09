@@ -1,0 +1,83 @@
+<app-detail (close)="closeDetail($event)">
+    <h1 detail-title><strong>{{sedeEditar ?'EDITAR':'AGREGAR'}}</strong></h1>
+    <form detail-content [formGroup]="formSede" (ngSubmit)="addRegistro()">
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="nombre">{{'Nombre(*): '}}</label>
+                <input type="text" name="nombre" formControlName="nombre" class="form-control"
+                    id="nombre" oninput="nombre.value = nombre.value.toUpperCase()"
+                    [ngClass]="{'is-valid': nombreField?.dirty && !nombreField?.invalid && !nombreField?.errors,'is-invalid': nombreField?.dirty && nombreField?.invalid && nombreField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="nombreField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="descripcion">{{'Descripción(*): '}}</label>
+                <input type="text" name="descripcion" formControlName="descripcion" class="form-control"
+                    id="descripcion" oninput="descripcion.value = descripcion.value.toUpperCase()"
+                    [ngClass]="{'is-valid': descripcionField?.dirty && !descripcionField?.invalid && !descripcionField?.errors,'is-invalid': descripcionField?.dirty && descripcionField?.invalid && descripcionField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="descripcionField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="nemonico">{{'Nemonico(*): '}}</label>
+                <input type="text" name="nemonico" formControlName="nemonico" class="form-control"
+                    id="nemonico" oninput="nemonico.value = nemonico.value.toUpperCase()"
+                    [ngClass]="{'is-valid': nemonicoField?.dirty && !nemonicoField?.invalid && !nemonicoField?.errors,'is-invalid': nemonicoField?.dirty && nemonicoField?.invalid && nemonicoField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="nemonicoField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="sedeSuperior">{{'Sede Superior(*):'}}</label>
+                <select [compareWith]="compararSedeSuperior" class="custom-select" formControlName="sedeSuperior"
+                    name="sedeSuperior" id="sedeSuperior">
+                    <option [value]="''" selected>Seleccionar sede superior</option>
+                    <option *ngFor="let sedeSuperior of listaSedeSuperior" [ngValue]="sedeSuperior">
+                        {{sedeSuperior.nombre}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-block btn-primary"
+                    [disabled]="formSede?.invalid">
+                    {{sedeEditar?'GUARDAR':'GUARDAR'}}</button>
+            </div>
+        </div>
+    </form>
+</app-detail>
+<ng-template #modal_success let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Éxito'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{sedeEditar?'Se ha actualizado el registro correctamente.':'Se ha agregado el registro correctamente.'}}
+    </div>
+</ng-template>
+<ng-template #modal_error let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Error'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{sedeEditar?'Ha habido un problema al actualizar el registro.':'Ha habido un problema al agregar el registro.'}}
+    </div>
+</ng-template>

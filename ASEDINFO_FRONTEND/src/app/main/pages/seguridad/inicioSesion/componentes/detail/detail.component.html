@@ -1,0 +1,30 @@
+<div id="detail" [@slide] *ngIf="showDetail">
+
+  <div class="row">
+    <div class="col-lg-10 col-md-8 col-8">
+      <div class="card box-shadow-sm">
+        <div class="card-body">
+          <ng-content select="[detail-title]"></ng-content>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-3 col-4">
+      <a class="btn btn-danger" (click)="closeDetail()">
+        <i class="fa fa-times close"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card box-shadow-sm mt-1" id="carContenido">
+        <div class="card-body">
+          <ng-content select="[detail-content]"></ng-content>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="overlay"></div>

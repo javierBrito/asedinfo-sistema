@@ -1,0 +1,132 @@
+<div class="row">
+    <div class="col-12">
+        <div class="card box-shadow-sm">
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-12">
+                        <ng-container>
+                            <mat-tab-group mat-align-tabs="center" #revTabGroup class="tab-group"
+                                [(selectedIndex)]="selectedTab">
+                                <mat-tab>
+                                    <section class="tab-container">
+                                        <div>
+                                            {{'Lista Sede'}}
+                                            <button type="submit" (click)="openDetail()" matTooltip="Agregar Nuevo Sede"
+                                                class="btn btn-block btn-primary form-control mt-2">
+                                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                                {{'Agregar Sede'}}
+                                            </button>
+                                            <table class="table" *ngIf="listaSede.length > 0" id="tablaSede">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">Superior</th>
+                                                        <th scope="col">Nombre</th>
+                                                        <th scope="col">Descripción</th>
+                                                        <th scope="col">Nemonico</th>
+                                                        <th scope="col">Estado</th>
+                                                        <th scope="col">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr
+                                                        *ngFor="let sede of listaSede | paginate: {id:'paginar', itemsPerPage: itemsRegistros, currentPage: page } ; let index=index">
+                                                        <td>{{index+1}}</td>
+                                                        <td>
+                                                            <span
+                                                                *ngIf="sede.sedeSuperior">{{sede.sedeSuperior.nombre}}
+                                                            </span>
+                                                        </td>
+                                                        <td>{{sede.nombre}}</td>
+                                                        <td>{{sede.descripcion}}</td>
+                                                        <td>{{sede.nemonico}}</td>
+                                                        <td>{{sede.estado}}</td>
+                                                        <td>
+                                                            <div class="btn-group" role="group"
+                                                                aria-label="Basic example">
+                                                                <button (click)="openEditarDetail(sede)"
+                                                                    matTooltip="Editar Sede" type=" button"
+                                                                    class="btn btn-primary" rippleEffect round><i
+                                                                        class="fa fa-pencil"
+                                                                        (click)="openEditarDetail(sede)"></i></button>
+                                                                <button (click)="openRemoverDetail(sede)"
+                                                                    matTooltip="Eliminar Sede" type="button"
+                                                                    class="btn btn-danger" rippleEffect><i
+                                                                        class="fa fa-trash"
+                                                                        (click)="openRemoverDetail(sede)"></i></button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="row mt-5" *ngIf="listaSede.length > itemsRegistros">
+                                                <div class="col-12 text-center">
+                                                    <pagination-controls id="paginar" class="paginacion"
+                                                        [responsive]="true" [autoHide]="true" previousLabel="Anterior"
+                                                        nextLabel="Siguiente" (pageChange)="page = $event"
+                                                        screenReaderCurrentLabel="Tú estas en la página:">
+                                                    </pagination-controls>
+                                                </div>
+                                            </div>
+                                            <ng-container *ngIf="listaSede.length === 0">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <p>No hay datos disponibles</p>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </section>
+                                </mat-tab>
+                            </mat-tab-group>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-form-sede [sedeEditar]="sedeSeleccionado" (listaSede)="listarSedeActivoActualizada($event)"
+    (close)="closeDetail($event)" *ngIf="showDetail">
+</app-form-sede>
+
+<ng-template #modal_confirm_delete let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Confirmar borrado.'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('no')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{'¿Quieres borrar el registro?'}}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('yes')">{{'Si'}}</button>
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('no')">{{'No'}}</button>
+    </div>
+</ng-template>
+
+<ng-template #modal_success let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Exito'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{'El registro ha sido borrada con éxito'}}
+    </div>
+</ng-template>
+
+<ng-template #modal_error let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Error'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{'Ha habido un problema al borrar el registro'}}
+    </div>
+</ng-template>

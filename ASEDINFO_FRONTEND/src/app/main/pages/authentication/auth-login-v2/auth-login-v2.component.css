@@ -1,0 +1,69 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+.reload-captcha {
+  border: none;
+  width: 4rem;
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin-left: 1rem;
+}
+
+.reload-captcha:hover {
+  background-color: #130591;
+  color: #fff;
+
+}
+
+.captcha-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  padding: 1.8rem;
+  margin: 2rem;
+  background-color: rgb(244, 245, 248);
+  border-radius: 0.6rem;
+}
+
+.captcha-image {
+  display: flex;
+}
+
+.captcha-image span {
+  transition: all 0.3s ease-in-out;
+}
+
+.captcha-image span:hover {
+  transform: scale(1.2);
+}
+
+.captcha-character {
+  display: inline-block;
+  margin-bottom: -5px; /* Ajusta el valor según tus preferencias */
+}
+
+/* Estilos para letras y números 2D */
+
+.two-dimensional {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+.two-dimensional .captcha-character {
+  font-size: 36px;
+  font-weight: bold;
+  padding: 4px;
+  transform: rotate(-10deg) translateY(-10px);
+}
+
+.two-dimensional .captcha-character:nth-child(odd) {
+  transform: rotateY(-20deg);
+}
+
+.two-dimensional .captcha-character:nth-child(2n+1) {
+  margin-top: 10px;
+  transform: rotate(-10deg) translateY(10px);
+}
+

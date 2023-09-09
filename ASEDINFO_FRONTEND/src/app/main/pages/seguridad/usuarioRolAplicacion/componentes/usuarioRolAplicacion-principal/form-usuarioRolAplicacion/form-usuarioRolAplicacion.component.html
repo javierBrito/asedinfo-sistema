@@ -1,0 +1,99 @@
+<app-detail (close)="closeDetail($event)">
+    <h1 detail-title><strong>{{rolAplicacionRecursoEditar ?'EDITAR':'AGREGAR'}}</strong></h1>
+    <form detail-content [formGroup]="formUsuarioRolAplicacion" (ngSubmit)="addRegistroUsuarioAplicacion()">
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="aplicacion"><b>{{'Aplicación (*):'}}</b></label>
+                <select [compareWith]="compararAplicacion" class="custom-select"
+                    (change)="listarRolAplicacionPorCodAplicacion()" formControlName="aplicacion" name="aplicacion"
+                    id="aplicacion">
+                    <option [value]="''" selected>Seleccionar aplicación</option>
+                    <option *ngFor="let aplicacion of listaAplicacion" [ngValue]="aplicacion">
+                        {{aplicacion.nombre}}</option>
+                </select>
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback">Por favor seleccione una opción.</div>
+            </div>
+            <div class="col-12">
+                <label></label>
+            </div>
+            <div class="col-12">
+                <label for="rolAplicacion"><b>{{'Rol Aplicación(*):'}}</b></label>
+                <select class="custom-select" formControlName="rolAplicacion" name="rolAplicacion" id="rolAplicacion"
+                    [compareWith]="compararRolAplicacion" (change)="listarRolAplicacionRecursoPorRolAplicacion()">
+                    <option [value]="''" selected>Seleccionar rol aplicación</option>
+                    <option *ngFor="let rolAplicacion of listaRolAplicacion" [ngValue]="rolAplicacion">
+                        {{rolAplicacion?.nombreRol}}</option>
+                </select>
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+            </div>
+        </div>
+        <!--
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="rolAplicacionRecurso"><b>{{'Recurso(*):'}}</b></label>
+                <select class="custom-select" formControlName="rolAplicacionRecurso" name="rolAplicacionRecurso"
+                    id="rolAplicacionRecurso" [compareWith]="compararRolAplicacionRecurso">
+                    <option [value]="''" selected>Seleccionar recurso</option>
+                    <option *ngFor="let rolAplicacionRecurso of listaRolAplicacionRecursoChild"
+                        [ngValue]="rolAplicacionRecurso">
+                        {{rolAplicacionRecurso?.recurso?.nombre}}</option>
+                </select>
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+            </div>
+        </div>
+        -->
+        <div class="row form-group">
+            <div class="col-12">
+                <label><b>{{'Recursos(*):'}}</b></label>
+                <ul>
+                    <li *ngFor="let rolAplicacionRecurso of listaRolAplicacionRecursoChild">
+                        <mat-checkbox [color]="primary"
+                            (ngModelChange)="updateAllComplete()">
+                            {{rolAplicacionRecurso?.recurso?.nombre}}
+                        </mat-checkbox>
+                    </li>
+                </ul>
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-block btn-primary" [disabled]="disabledBotonGuardar">
+                    {{rolAplicacionRecursoEditar?'GUARDAR':'GUARDAR'}}</button>
+            </div>
+        </div>
+    </form>
+
+</app-detail>
+<ng-template #modal_success let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Éxito'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{usuarioRolAplicacionEditar ?'Se ha actualizado el registro correctamente.':'Se ha agregado el registro
+        correctamente.'}}
+    </div>
+</ng-template>
+<ng-template #modal_error let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Error'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{usuarioRolAplicacionEditar?'Ha habido un problema al actualizar el registro.':'Ha habido un problema al añadir
+        el
+        registro.'}}
+    </div>
+</ng-template>

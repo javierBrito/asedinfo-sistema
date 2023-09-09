@@ -1,0 +1,98 @@
+<app-detail (close)="closeDetail($event)">
+    <h1 detail-title><strong>{{productoEditar ?'EDITAR':'AGREGAR'}}</strong></h1>
+    <form detail-content [formGroup]="formProducto" (ngSubmit)="addRegistro()">
+        <div class="container" style="border: 0px solid blue; box-shadow: 0px 10px 10px black">
+            <div class="row form-group">
+                <div class="col-12">
+                    <b>
+                        <h3>Datos Producto</h3>
+                    </b>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-6">
+                    <label for="descripcion"><b>{{'Descripción(*): '}}</b></label>
+                    <input type="text" name="descripcion" formControlName="descripcion" class="form-control"
+                        id="descripcion" placeholder="Por favor, ingrese la descripción."
+                        oninput="descripcion.value = descripcion.value.toUpperCase()"
+                        [ngClass]="{'is-valid': descripcionField?.dirty && !descripcionField?.invalid && !descripcionField?.errors, 'is-invalid': descripcionField?.dirty && descripcionField?.invalid && descripcionField?.errors}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="descripcionField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label for="fechaRegistra"><b>{{'Registra(*): '}}</b></label>
+                    <input type="date" name="fechaRegistra" formControlName="fechaRegistra" class="form-control"
+                        id="fechaRegistra"
+                        [ngClass]="{'is-valid': fechaRegistraField?.dirty && !fechaRegistraField?.invalid && !fechaRegistraField?.errors,'is-invalid': fechaRegistraField?.dirty && fechaRegistraField?.invalid && fechaRegistraField?.errors}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="fechaRegistraField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-12">
+                    <label for="precioCosto"><b>{{'Precio Costo(*): Formato 999.99'}}</b></label>
+                    <input type="number" name="precioCosto" formControlName="precioCosto" class="form-control"
+                        id="precioCosto" placeholder="999.99" step="0.01" min="0.01"
+                        [ngClass]="{'is-valid': precioCostoField?.dirty && !precioCostoField?.invalid && !precioCostoField?.errors && (precioCostoField?.value > precioCostoField?.value), 'is-invalid': precioCostoField?.dirty && precioCostoField?.invalid && precioCostoField?.errors  && !(precioCostoField?.value > precioCostoField?.value)}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="precioCostoField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-12">
+                    <label for="numExistenciaActual"><b>{{'Existencia Actual(*): Formato 999'}}</b></label>
+                    <input type="number" name="numExistenciaActual" formControlName="numExistenciaActual" class="form-control" id="numExistenciaActual"
+                        placeholder="999" step="001" min="001"
+                        [ngClass]="{'is-valid': numExistenciaActualField?.dirty && !numExistenciaActualField?.invalid && !numExistenciaActualField?.errors && (numExistenciaActualField?.value > numExistenciaActualField?.value), 'is-invalid': numExistenciaActualField?.dirty && numExistenciaActualField?.invalid && numExistenciaActualField?.errors  && !(numExistenciaActualField?.value > numExistenciaActualField?.value)}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="numExistenciaActualField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-block btn-primary" [disabled]="formProducto?.invalid">
+                        {{productoEditar?'GUARDAR':'GUARDAR'}}</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</app-detail>
+<ng-template #modal_success let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Éxito'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{productoEditar ?'Se ha actualizado el registro correctamente.':'Se ha agregado el registro correctamente.'}}
+    </div>
+</ng-template>
+<ng-template #modal_error let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Error'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{productoEditar?'Ha habido un problema al actualizar el registro.':'Ha habido un problema al añadir el
+        registro.'}}
+    </div>
+</ng-template>

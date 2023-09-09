@@ -1,0 +1,98 @@
+<app-detail (close)="closeDetail($event)">
+    <h1 detail-title><strong>{{aplicacionEditar ?'EDITAR':'AGREGAR'}}</strong></h1>
+    <form detail-content [formGroup]="formAplicacion" (ngSubmit)="addRegistro()">
+        <div class="row form-group">
+            <div class="col-12">
+                <label for="nombre">{{'Nombre(*): '}}</label>
+                <input type="text" name="nombre" formControlName="nombre" class="form-control"
+                    id="nombre" oninput="nombre.value = nombre.value.toUpperCase()"
+                    [ngClass]="{'is-valid': nombreField?.dirty && !nombreField?.invalid && !nombreField?.errors,'is-invalid': nombreField?.dirty && nombreField?.invalid && nombreField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="nombreField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="descripcion">{{'Descripción(*): '}}</label>
+                <input type="text" name="descripcion" formControlName="descripcion" class="form-control"
+                    id="descripcion" oninput="descripcion.value = descripcion.value.toUpperCase()"
+                    [ngClass]="{'is-valid': descripcionField?.dirty && !descripcionField?.invalid && !descripcionField?.errors,'is-invalid': descripcionField?.dirty && descripcionField?.invalid && descripcionField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="descripcionField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="prefijo">{{'Prefijo(*): '}}</label>
+                <input type="text" name="prefijo" formControlName="prefijo" class="form-control"
+                    id="prefijo" oninput="prefijo.value = prefijo.value.toUpperCase()"
+                    [ngClass]="{'is-valid': prefijoField?.dirty && !prefijoField?.invalid && !prefijoField?.errors,'is-invalid': prefijoField?.dirty && prefijoField?.invalid && prefijoField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="prefijoField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="tipo">{{'Tipo(*): '}}</label>
+                <input type="text" name="tipo" formControlName="tipo" class="form-control"
+                    id="tipo" oninput="tipo.value = tipo.value.toUpperCase()"
+                    [ngClass]="{'is-valid': tipoField?.dirty && !tipoField?.invalid && !tipoField?.errors,'is-invalid': tipoField?.dirty && tipoField?.invalid && tipoField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="tipoField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="url">{{'Url(*): '}}</label>
+                <input type="text" name="url" formControlName="url" class="form-control"
+                    id="url" oninput="url.value = url.value.toLowerCase()"
+                    [ngClass]="{'is-valid': urlField?.dirty && !urlField?.invalid && !urlField?.errors,'is-invalid': urlField?.dirty && urlField?.invalid && urlField?.errors}">
+                <div class="valid-feedback">
+                    <span>{{ "Exito"}}</span>
+                </div>
+                <div class="invalid-feedback">
+                    <span *ngIf="urlField?.errors?.['required']">{{"Requerido"}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-block btn-primary"
+                    [disabled]="formAplicacion?.invalid">{{aplicacionEditar
+                    ?'GUARDAR':'GUARDAR'}}</button>
+            </div>
+        </div>
+    </form>
+</app-detail>
+
+<ng-template #modal_success let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Éxito'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{aplicacionEditar?'Se ha actualizado el registro correctamente.':'Se ha agregado el registro correctamente.'}}
+    </div>
+</ng-template>
+
+<ng-template #modal_error let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Error'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{aplicacionEditar?'Ha habido un problema al actualizar el registro.':'Ha habido un problema al agregar el registro.'}}
+    </div>
+</ng-template>

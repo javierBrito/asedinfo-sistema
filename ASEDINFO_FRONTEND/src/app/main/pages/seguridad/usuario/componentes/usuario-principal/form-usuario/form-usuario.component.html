@@ -1,0 +1,199 @@
+<app-detail (close)="closeDetail($event)">
+    <h1 detail-title><strong>{{personaEditar ?'EDITAR':'AGREGAR'}}</strong></h1>
+    <form detail-content [formGroup]="formUsuario" (ngSubmit)="addRegistroPersona()">
+        <div class="container" style="border: 0px solid blue; box-shadow: 0px 10px 10px black">
+            <div class="row form-group">
+                <div class="col-12">
+                    <b>
+                        <h3>Datos Persona</h3>
+                    </b>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-6">
+                    <label for="identificacion"><b>{{'Identificación(*): '}}</b></label>
+                    <input type="text" name="identificacion" formControlName="identificacion" class="form-control"
+                        (keypress)="validateFormat($event)" maxlength="10" id="identificacion"
+                        (keyup)="onKey($event)"
+                        placeholder="Por favor, ingrese el número de cédula."
+                        oninput="identificacion.value = identificacion.value.toUpperCase()"
+                        [ngClass]="{'is-valid': identificacionField?.dirty && !identificacionField?.invalid && !identificacionField?.errors, 'is-invalid': identificacionField?.dirty && identificacionField?.invalid && identificacionField?.errors}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="identificacionField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="identificacionField?.errors?.['cedula_invalid']">{{"No es una cédula
+                            valida."}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="identificacionField?.errors?.['minlength']">{{"Debe ingresar al menos 10
+                            dígitos."}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="identificacionField?.errors?.['maxlength']">{{"Solo puede ingresar 10
+                            dígitos."}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="identificacionField?.errors?.['pattern']">{{"Por favor, ingrese
+                            números."}}</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label for="fechaNacimiento"><b>{{'Nacimiento(*): '}}</b></label>
+                    <input type="date" name="fechaNacimiento" formControlName="fechaNacimiento" class="form-control"
+                        id="fechaNacimiento" 
+                        [ngClass]="{'is-valid': fechaNacimientoField?.dirty && !fechaNacimientoField?.invalid && !fechaNacimientoField?.errors,'is-invalid': fechaNacimientoField?.dirty && fechaNacimientoField?.invalid && fechaNacimientoField?.errors}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="fechaNacimientoField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-6">
+                    <label for="nombres"><b>{{'Nombre(*): '}}</b></label>
+                    <input type="text" name="nombres" formControlName="nombres" class="form-control" id="nombres"
+                        oninput="nombres.value = nombres.value.toUpperCase()"
+                        [ngClass]="{'is-valid': nombresField?.dirty && !nombresField?.invalid && !nombresField?.errors, 'is-invalid': nombresField?.dirty && nombresField?.invalid && nombresField?.errors}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="nombresField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label for="apellidos"><b>{{'Apellido(*): '}}</b></label>
+                    <input type="text" name="apellidos" formControlName="apellidos" class="form-control" id="apellidos"
+                        oninput="apellidos.value = apellidos.value.toUpperCase()"
+                        [ngClass]="{'is-valid': apellidosField?.dirty && !apellidosField?.invalid && !apellidosField?.errors, 'is-invalid': apellidosField?.dirty && apellidosField?.invalid && apellidosField?.errors}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="apellidosField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-12">
+                    <label for="direccion"><b>{{'Dirección(*): '}}</b></label>
+                    <input type="text" name="direccion" formControlName="direccion"
+                        class="form-control" id="direccion"
+                        [ngClass]="{'is-valid': direccionField?.dirty && !direccionField?.invalid && !direccionField?.errors, 'is-invalid': direccionField?.dirty && direccionField?.invalid && direccionField?.errors}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="direccionField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4">
+                    <label for="celular"><b>{{'Celular(*): '}}</b></label>
+                    <input type="text" name="celular" formControlName="celular" class="form-control" id="celular"
+                        [ngClass]="{'is-valid': celularField?.dirty && !celularField?.invalid && !celularField?.errors, 'is-invalid': celularField?.dirty && celularField?.invalid && celularField?.errors}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="celularField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <label for="correo"><b>{{'Correo(*): '}}</b></label>
+                    <input type="text" name="correo" formControlName="correo" class="form-control"
+                        id="correo"
+                        [ngClass]="{'is-valid': correoField?.dirty && !correoField?.invalid && !correoField?.errors, 'is-invalid': correoField?.dirty && correoField?.invalid && correoField?.errors}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="correoField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+            </div>
+        </div>
+        <br>
+        <div class="container" style="border: 0px solid black; box-shadow: 0px 10px 10px black">
+            <div class="row form-group">
+                <div class="col-12">
+                    <b>
+                        <h3>Datos Usuario</h3>
+                    </b>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-6">
+                    <label for="cambioClave"><b>{{'Cambio Clave?(*):'}}</b></label>
+                    <select class="custom-select" formControlName="cambioClave" name="cambioClave" id="cambioClave">
+                        <option [value]="''" selected>Seleccionar respuesta</option>
+                        <option *ngFor="let respuesta of listaRespuesta" [ngValue]="respuesta.valor">
+                            {{respuesta.valor}}</option>
+                    </select>
+    
+                    <br>
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label for="actualizacionDatos"><b>{{'Actualización datos?(*):'}}</b></label>
+                    <select class="custom-select" formControlName="actualizacionDatos" name="actualizacionDatos"
+                        id="actualizacionDatos">
+                        <option [value]="''" selected>Seleccionar respuesta</option>
+                        <option *ngFor="let respuesta of listaRespuesta" [ngValue]="respuesta.valor">
+                            {{respuesta.valor}}</option>
+                    </select>
+    
+                    <br>
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="row">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-block btn-primary" [disabled]="formUsuario?.invalid">
+                    {{personaEditar?'GUARDAR':'GUARDAR'}}</button>
+            </div>
+        </div>
+    </form>
+
+</app-detail>
+<ng-template #modal_success let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Éxito'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{personaEditar ?'Se ha actualizado el registro correctamente.':'Se ha agregado el registro correctamente.'}}
+    </div>
+</ng-template>
+<ng-template #modal_error let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Error'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{personaEditar?'Ha habido un problema al actualizar el registro.':'Ha habido un problema al añadir el
+        registro.'}}
+    </div>
+</ng-template>

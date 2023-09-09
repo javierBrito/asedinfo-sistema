@@ -1,0 +1,129 @@
+<div class="auth-wrapper auth-v2">
+  <div class="auth-inner row m-0">
+    <!-- Brand logo--><a class="brand-logo" href="javascript:void(0);">
+      <!-- <img src="{{ coreConfig.app.appLogoImage }}" alt="brand-logo" height="28" /> -->
+      <h2 class="brand-text ml-1" style="color: #130591;">Ministerio de Educación</h2>
+    </a>
+    <!-- /Brand logo-->
+    <!-- Left Text-->
+    <div class="d-flex col-lg-8 align-items-center p-5">
+      <div class="w-100 align-items-center justify-content-center px-5">
+        <div class="card text-center" style="top: 50px;">
+          <div class="card-header">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title" style="color: #130591;">Bienvenido a Asedinfo!</h5>
+            <p class="card-text">Asedinfo es una plataforma que se encuentra desarrollado y sirve para el manejo y
+              administración de los aplicativos publicados</p>
+            <img class="img-fluid" style="width: 400px;" [src]="
+            coreConfig.layout.skin === 'dark'
+              ? 'assets/images/pages/login/colmena-login-img.svg'
+              : 'assets/images/pages/login/colmena-login-img.svg'
+          " alt="Login V2" />
+          </div>
+          <div class="card-footer text-muted">
+            <img class="float-sm-left img-fluid" src="assets/images/menu/colmena-lineas.svg" style="width: 150px;">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /Left Text-->
+    <!-- Login-->
+    <div class="d-flex col-lg-4 align-items-center auth-bg px-2 p-lg-5">
+      <div class="col-12 col-sm-8 col-md-6 col-lg-12 px-xl-2 mx-auto">
+        <img class="rounded mx-auto d-block img-fluid" src="assets/images/fondo/colmena-fondo.svg"
+          style="width: 150px;">
+        <h2 class="card-title font-weight-bold mb-1">Bienvenido! 👋</h2>
+        <ngb-alert [type]="'danger'" [dismissible]="false" *ngIf="error">
+          <div class="alert-body">
+            <p>{{ error }}</p>
+          </div>
+        </ngb-alert>
+
+        <form class="auth-login-form mt-2" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label class="form-label" for="login-email">Usuario</label>
+            <input type="text" formControlName="usuario" class="form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.usuario.errors }" aria-describedby="login-email" autofocus=""
+              placeholder="Usuario o Identificación" tabindex="1" />
+            <div *ngIf="submitted && f.usuario.errors" class="invalid-feedback">
+              <div *ngIf="f.usuario.errors.required">Usuario es requerido</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="d-flex justify-content-between">
+              <label for="login-password">Contraseña</label>
+            </div>
+            <div class="input-group input-group-merge form-password-toggle">
+              <input [type]="passwordTextType ? 'text' : 'password'" formControlName="password"
+                class="form-control form-control-merge"
+                [ngClass]="{ 'is-invalid error': submitted && f.password.errors }" placeholder="············"
+                aria-describedby="login-password" tabindex="2" />
+              <div class="input-group-append">
+                <span class="input-group-text cursor-pointer"><i class="feather font-small-4" [ngClass]="{
+                      'icon-eye-off': passwordTextType,
+                      'icon-eye': !passwordTextType
+                    }" (click)="togglePasswordTextType()"></i></span>
+              </div>
+            </div>
+            <div *ngIf="submitted && f.password.errors" class="invalid-feedback"
+              [ngClass]="{ 'd-block': submitted && f.password.errors }">
+              <div *ngIf="f.password.errors.required">Clave es Requerida</div>
+            </div>
+          </div>
+
+          <!-- captcha -->
+          <!--
+          <div class="form-group">
+            <div class="captcha-container ">
+              <div class="captcha-image two-dimensional">
+                <span class="captcha-character" [innerHTML]="captchaResult" [ngStyle]="generateStyle()"></span>
+              </div>
+              <button class="reload-captcha" (click)="generateCaptcha()"><i
+                  class="fa-solid fa-rotate-right"></i></button>
+            </div>
+            <input type="text" id="captcha" formControlName="captcha" class="form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.captcha.errors }" placeholder="Ingrese el texto de la imagen"
+              tabindex="3" />
+            <div *ngIf="submitted && f.captcha.errors" class="invalid-feedback">
+              <div *ngIf="f.captcha.errors.required">Captcha es requerido</div>
+            </div>
+          </div>
+          -->
+          <!-- fin captcha -->
+
+          <button [disabled]="loading" class="btn btn-primary btn-block" tabindex="4" rippleEffect>
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>Ingresar
+          </button>
+        </form>
+      </div>
+    </div>
+    <!-- /Login-->
+  </div>
+</div>
+<ng-template #modal_acuerdo_confidencialidad let-modal>
+
+  <div class="modal-header">
+    <h5 class="modal-title justify-content-center">{{'APLICATIVOS ASEDINFO'}}</h5>
+    <!--     <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button> -->
+  </div>
+  <div class="modal-body">
+    <blockquote class="blockquote">
+      <p class="mb-0 text-center">Acuerdo de confidencialidad</p>
+    </blockquote>
+    <p>El usuario y contraseña asignados es de exclusiva responsabilidad</p>
+    <p>de la máxima autoridad de la institución educativa.</p>
+    <p>Toda la información enviada al Ministerio de Educación por parte </p>
+    <p>de la institución educativa es de exclusiva responsabilidad de esta,</p>
+    <p>así como lo que consta responsabilidad de esta, así como lo que consta</p>
+    <p>en los diversos sistemas informáticos de registro para cumplimiento de</p>
+    <p>obligaciones de la institución.</p>
+    <p class="text-center"><strong>Acepto términos y condiciones.</strong></p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-block btn-primary" (click)="modal.close('Close click')">ACEPTAR</button>
+    <button type="button" class="btn btn-block btn-danger" (click)="modal.close('no')">CANCELAR</button>
+  </div>
+</ng-template>

@@ -1,0 +1,145 @@
+<app-detail (close)="closeDetail($event)">
+    <h1 detail-title><strong>{{transaccionEditar ?'EDITAR':'AGREGAR'}}</strong></h1>
+    <form detail-content [formGroup]="formTransaccion" (ngSubmit)="addRegistro()">
+        <div class="container" style="border: 0px solid blue; box-shadow: 0px 10px 10px black">
+            <div class="row form-group">
+                <div class="col-12">
+                    <b>
+                        <h3>Datos Transacción</h3>
+                    </b>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-6 flex justify-end card profile-header mb-2 was-validated">
+                    <label for="codCliente"><b>{{'Cliente(*): '}}</b></label>
+                    <select name="codCliente" formControlName="codCliente" required placeholder="Seleccione Cliente..."
+                        class="form-control mr-sm-2" id="codCliente" #t>
+                        <option [value]="" selected>Seleccionar Cliente</option>
+                        <option *ngFor="let cliente  of listaCliente" [value]="cliente.codigo">
+                            <span>{{cliente?.persona?.nombres}}</span>
+                        </option>
+                    </select>
+                    <div class="valid-feedback"></div>
+                    <div class="invalid-feedback">Por favor seleccione una opción.</div>
+                </div>
+                <div class="col-6 flex justify-end card profile-header mb-2 was-validated">
+                    <label for="codProducto"><b>{{'Producto(*): '}}</b></label>
+                    <select name="codProducto" formControlName="codProducto" required
+                        placeholder="Seleccione producto..." class="form-control mr-sm-2" id="codProducto" #t>
+                        <option [value]="" selected>Seleccionar producto</option>
+                        <option *ngFor="let producto  of listaProducto" [value]="producto.codigo">
+                            <span>{{producto?.descripcion}}</span>
+                        </option>
+                    </select>
+                    <div class="valid-feedback"></div>
+                    <div class="invalid-feedback">Por favor seleccione una opción.</div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-12">
+                    <label for="descripcion"><b>{{'Descripción(*): '}}</b></label>
+                    <input type="text" name="descripcion" formControlName="descripcion" class="form-control"
+                        id="descripcion" placeholder="Por favor, ingrese la descripción."
+                        oninput="descripcion.value = descripcion.value.toUpperCase()"
+                        [ngClass]="{'is-valid': descripcionField?.dirty && !descripcionField?.invalid && !descripcionField?.errors, 'is-invalid': descripcionField?.dirty && descripcionField?.invalid && descripcionField?.errors}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="descripcionField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-4">
+                    <label for="fechaInicio"><b>{{'Fecha Inicio(*): '}}</b></label>
+                    <input type="date" name="fechaInicio" formControlName="fechaInicio" class="form-control"
+                        id="fechaInicio"
+                        [ngClass]="{'is-valid': fechaInicioField?.dirty && !fechaInicioField?.invalid && !fechaInicioField?.errors,'is-invalid': fechaInicioField?.dirty && fechaInicioField?.invalid && fechaInicioField?.errors}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="fechaInicioField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label for="numMes"><b>{{'Meses(*): F-999'}}</b></label>
+                    <input type="number" name="numMes" formControlName="numMes" class="form-control" id="numMes"
+                        placeholder="999" step="001" min="001" (keyup)="onKey($event)"
+                        [ngClass]="{'is-valid': numMesField?.dirty && !numMesField?.invalid && !numMesField?.errors && (numMesField?.value > numMesField?.value), 'is-invalid': numMesField?.dirty && numMesField?.invalid && numMesField?.errors  && !(numMesField?.value > numMesField?.value)}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label for="fechaFin"><b>{{'Fin(*): '}}</b></label>
+                    <input type="date" name="fechaFin" formControlName="fechaFin" class="form-control" id="fechaFin"
+                        [ngClass]="{'is-valid': fechaFinField?.dirty && !fechaFinField?.invalid && !fechaFinField?.errors,'is-invalid': fechaFinField?.dirty && fechaFinField?.invalid && fechaFinField?.errors}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="fechaFinField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-6">
+                    <label for="precioVenta"><b>{{'Precio(*): F-999.99'}}</b></label>
+                    <input type="number" name="precioVenta" formControlName="precioVenta" class="form-control"
+                        id="precioVenta" placeholder="999.99" step="0.01" min="0.01"
+                        [ngClass]="{'is-valid': precioVentaField?.dirty && !precioVentaField?.invalid && !precioVentaField?.errors && (precioVentaField?.value > precioVentaField?.value), 'is-invalid': precioVentaField?.dirty && precioVentaField?.invalid && precioVentaField?.errors  && !(precioVentaField?.value > precioVentaField?.value)}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="precioVentaField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label for="numProductoVenta"><b>{{'Cantidad(*): F-999'}}</b></label>
+                    <input type="number" name="numProductoVenta" formControlName="numProductoVenta" class="form-control"
+                        id="numProductoVenta" placeholder="999" step="001" min="001"
+                        [ngClass]="{'is-valid': numProductoVentaField?.dirty && !numProductoVentaField?.invalid && !numProductoVentaField?.errors && (numProductoVentaField?.value > numProductoVentaField?.value), 'is-invalid': numProductoVentaField?.dirty && numProductoVentaField?.invalid && numProductoVentaField?.errors  && !(numProductoVentaField?.value > numProductoVentaField?.value)}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="numProductoVentaField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-block btn-primary" [disabled]="formTransaccion?.invalid">
+                        {{transaccionEditar?'GUARDAR':'GUARDAR'}}</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</app-detail>
+<ng-template #modal_success let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Éxito'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{transaccionEditar ?'Se ha actualizado el registro correctamente.':'Se ha agregado el registro
+        correctamente.'}}
+    </div>
+</ng-template>
+<ng-template #modal_error let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Error'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{transaccionEditar?'Ha habido un problema al actualizar el registro.':'Ha habido un problema al añadir el
+        registro.'}}
+    </div>
+</ng-template>

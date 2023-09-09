@@ -1,0 +1,193 @@
+<div class="row">
+    <div class="col-12">
+        <div class="card box-shadow-sm">
+            <div class="card-footer container" style="border: 1px solid blue">
+                <div class="row form-group">
+                    <div class="col-12">
+                        <b>{{'Datos Usuario'}}</b>
+                    </div>
+                </div>
+                <form detail-content [formGroup]="formUsuarioIdentificacion"
+                    (ngSubmit)="listarUsuarioPorIdentificacion()">
+                    <div class="row form-group">
+                        <div class="col-md-6 col-12 form-group">
+                            <label for="identificacion"><b>{{'Identificación(*): '}}</b></label>
+                            <input type="text" name="identificacion" id="identificacion"
+                                formControlName="identificacion" (keypress)="validateFormat($event)" maxlength="10"
+                                placeholder="Por favor, ingrese el número de cédula." class="form-control"
+                                (keyup)="onKey($event)"
+                                [ngClass]="{'is-valid': identificacionField?.dirty && !identificacionField?.invalid && !identificacionField?.errors,'is-invalid': identificacionField?.dirty && identificacionField?.invalid && identificacionField?.errors}">
+                            <div class="valid-feedback">
+                                <span>{{ "Exito"}}</span>
+                            </div>
+                            <div class="invalid-feedback">
+                                <span *ngIf="identificacionField?.errors?.['required']">{{"Requerido"}}</span>
+                            </div>
+                            <div class="invalid-feedback">
+                                <span *ngIf="identificacionField?.errors?.['cedula_invalid']">{{"No es una cédula
+                                    valida."}}</span>
+                            </div>
+                            <div class="invalid-feedback">
+                                <span *ngIf="identificacionField?.errors?.['minlength']">{{"Debe ingresar al menos 10
+                                    dígitos."}}</span>
+                            </div>
+                            <div class="invalid-feedback">
+                                <span *ngIf="identificacionField?.errors?.['maxlength']">{{"Solo puede ingresar 10
+                                    dígitos."}}</span>
+                            </div>
+                            <div class="invalid-feedback">
+                                <span *ngIf="identificacionField?.errors?.['pattern']">{{"Por favor, ingrese
+                                    números."}}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-12 form-group">
+                            <div class="my-2 text-left table-responsive">
+                                <button type="submit" [disabled]="formUsuarioIdentificacion.invalid"
+                                    class="btn btn-info btn-rounded">
+                                    <b>{{ "Buscar"}}</b>
+                                    <b>{{ " "}}</b>
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="row">
+                    <div class="col-12">
+                        <ng-container>
+                            <mat-tab-group mat-align-tabs="center" #revTabGroup class="tab-group"
+                                [(selectedIndex)]="selectedTab">
+                                <mat-tab>
+                                    <section class="tab-container">
+                                        <div>
+                                            <b>{{'Lista Usuario'}}</b>
+                                            <button type="submit" (click)="openDetail(1)"
+                                                matTooltip="Agregar Nuevo Usuario"
+                                                class="btn btn-block btn-primary form-control mt-2">
+                                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                                {{'Agregar Usuario'}}
+                                            </button>
+                                            <table class="table" *ngIf="listaPersona?.length > 0" id="tablaPersona">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">Identificación</th>
+                                                        <th scope="col">Nombres</th>
+                                                        <th scope="col">Correo</th>
+                                                        <th scope="col">Celular</th>
+                                                        <th scope="col">Cambio Clave</th>
+                                                        <th scope="col">Actualización Datos</th>
+                                                        <th scope="col">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr
+                                                        *ngFor="let persona of listaPersona | paginate: {id:'paginacionMatutino', itemsPerPage: itemsRegistros, currentPage: page } ; let index=index">
+                                                        <td>{{index+1}}</td>
+                                                        <td>{{persona?.identificacion}}</td>
+                                                        <td>{{persona?.nombres + ' ' + persona?.apellidos}}</td>
+                                                        <td>{{persona?.correo}}</td>
+                                                        <td>{{persona?.celular}}</td>
+                                                        <td>
+                                                            <div class="text-center">
+                                                                <span
+                                                                    *ngIf="persona.usuario">{{persona?.usuario?.cambioClave}}
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="text-center">
+                                                                <span
+                                                                    *ngIf="persona.usuario">{{persona?.usuario?.actualizacionDatos}}
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="btn-group" role="group"
+                                                                aria-label="Basic example">
+                                                                <button (click)="openEditarDetail(persona)"
+                                                                    matTooltip="Editar Usuario" type=" button"
+                                                                    class="btn btn-primary" rippleEffect round><i
+                                                                        class="fa fa-pencil"
+                                                                        (click)="openEditarDetail(persona)"></i></button>
+                                                                <button (click)="openRemoverDetail(persona)"
+                                                                    matTooltip="Eliminar Usuario" type="button"
+                                                                    class="btn btn-danger" rippleEffect><i
+                                                                        class="fa fa-trash"
+                                                                        (click)="openRemoverDetail(persona)"></i></button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="row mt-5" *ngIf="listaPersona?.length > itemsRegistros">
+                                                <div class="col-12 text-center">
+                                                    <pagination-controls id="paginacionMatutino" class="paginacion"
+                                                        [responsive]="true" [autoHide]="true" previousLabel="Anterior"
+                                                        nextLabel="Siguiente" (pageChange)="page = $event"
+                                                        screenReaderCurrentLabel="Tú estas en la página:">
+                                                    </pagination-controls>
+                                                </div>
+                                            </div>
+                                            <ng-container *ngIf="listaPersona.length === 0">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <p>No hay datos disponibles</p>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </section>
+                                </mat-tab>
+                            </mat-tab-group>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-form-usuario [personaEditar]="personaSeleccionado" [codigoChild]="codigo" [identificacionChild]="identificacion"
+    [listaPersonaChild]="listaPersona" (listaPersona)="listaPersonaActualizada($event)" (close)="closeDetail($event)"
+    *ngIf="showDetail">
+</app-form-usuario>
+
+<ng-template #modal_confirm_delete let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Confirmar borrado.'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('no')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{'¿Quieres borrar el registro?'}}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('yes')">{{'Si'}}</button>
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('no')">{{'No'}}</button>
+    </div>
+</ng-template>
+<ng-template #modal_success let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Exito'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{'El registro ha sido borrada con éxito'}}
+    </div>
+</ng-template>
+
+<ng-template #modal_error let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{'Error'}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        {{'Ha habido un problema al borrar el registro'}}
+    </div>
+</ng-template>
