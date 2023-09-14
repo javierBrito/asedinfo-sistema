@@ -18,7 +18,7 @@ public interface ProductoServicio {
 	 * @param estado
 	 * @return lista Transaccion
 	 */
-	List<Producto> listarProductoActivo(String estado);
+	List<Producto> listarProductoActivo(String nemonicoModulo);
 
 	/**
 	 * Permite obtener Transaccion
@@ -34,7 +34,7 @@ public interface ProductoServicio {
 	 * @param descripcion
 	 * @return listaProducto
 	 */
-	List<Producto> listarProductoPorDescripcion(String descripcion);
+	List<Producto> listarProductoPorDescripcion(String descripcion, String nemonicoModulo);
 
 	/**
 	 * Permite registrar Transaccion

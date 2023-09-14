@@ -30,14 +30,20 @@ public class Transaccion implements java.io.Serializable {
 	@Column(name = "cod_producto")
 	private Long codProducto;
 
+	@Column(name = "cod_modulo")
+	private Long codModulo;
+
+	@Column(name = "cod_operacion")
+	private Long codOperacion;
+
 	@Column(name = "descripcion")
 	private String descripcion;
 	
-	@Column(name = "precio_venta")
-	private float precioVenta;
+	@Column(name = "precio")
+	private float precio;
 	
-	@Column(name = "num_producto_venta")
-	private int numProductoVenta;
+	@Column(name = "num_producto")
+	private int numProducto;
 	
 	@Column(name = "num_mes")
 	private int numMes;
@@ -122,20 +128,20 @@ public class Transaccion implements java.io.Serializable {
 		this.codProducto = codProducto;
 	}
 
-	public float getPrecioVenta() {
-		return precioVenta;
+	public float getPrecio() {
+		return precio;
 	}
 
-	public void setPrecioVenta(float precioVenta) {
-		this.precioVenta = precioVenta;
+	public void setPrecio(float precio) {
+		this.precio = precio;
 	}
 
-	public int getNumProductoVenta() {
-		return numProductoVenta;
+	public int getNumProducto() {
+		return numProducto;
 	}
 
-	public void setNumProductoVenta(int numProductoVenta) {
-		this.numProductoVenta = numProductoVenta;
+	public void setNumProducto(int numProducto) {
+		this.numProducto = numProducto;
 	}
 
 	public Date getFechaInicio() {
@@ -160,5 +166,21 @@ public class Transaccion implements java.io.Serializable {
 
 	public void setNumMes(int numMes) {
 		this.numMes = numMes;
+	}
+
+	public Long getCodModulo() {
+		return codModulo;
+	}
+
+	public void setCodModulo(Long codModulo) {
+		this.codModulo = codModulo;
+	}
+
+	public Long getCodOperacion() {
+		return codOperacion;
+	}
+
+	public void setCodOperacion(Long codOperacion) {
+		this.codOperacion = codOperacion;
 	}
 }

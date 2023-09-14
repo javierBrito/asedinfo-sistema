@@ -47,7 +47,7 @@ public class TransaccionControlador {
 	}
 
 	@GetMapping(value = "listarTransaccionPorDescripcion/{descripcion}")
-	public ResponseGenerico<Transaccion> listarTransaccionPorAplicacion(@PathVariable("descripcion") String descripcion) {
+	public ResponseGenerico<Transaccion> listarTransaccionPorDescripcion(@PathVariable("descripcion") String descripcion) {
 		List<Transaccion> listaTransaccion = transaccionServicio.listarTransaccionPorDescripcion(descripcion);
 		// Respuesta
 		ResponseGenerico<Transaccion> response = new ResponseGenerico<>();

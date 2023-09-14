@@ -34,9 +34,9 @@ public class ProductoControlador {
 		return response;
 	}
 
-	@GetMapping(value = "listarProductoActivo")
-	public ResponseGenerico<Producto> listarProductoActivo() {
-		List<Producto> listaProducto = productoServicio.listarProductoActivo(EstadoEnum.ACTIVO.getDescripcion());
+	@GetMapping(value = "listarProductoActivo/{nemonicoModulo}")
+	public ResponseGenerico<Producto> listarProductoActivo(@PathVariable("nemonicoModulo") String nemonicoModulo) {
+		List<Producto> listaProducto = productoServicio.listarProductoActivo(nemonicoModulo);
 		// Respuesta
 		ResponseGenerico<Producto> response = new ResponseGenerico<>();
 		response.setListado(listaProducto);
@@ -46,9 +46,9 @@ public class ProductoControlador {
 		return response;
 	}
 
-	@GetMapping(value = "listarProductoPorDescripcion/{descripcion}")
-	public ResponseGenerico<Producto> listarProductoPorAplicacion(@PathVariable("descripcion") String descripcion) {
-		List<Producto> listaProducto = productoServicio.listarProductoPorDescripcion(descripcion);
+	@GetMapping(value = "listarProductoPorDescripcion/{descripcion}/{nemonicoModulo}")
+	public ResponseGenerico<Producto> listarProductoPorDescripcion(@PathVariable("descripcion") String descripcion, @PathVariable("nemonicoModulo") String nemonicoModulo) {
+		List<Producto> listaProducto = productoServicio.listarProductoPorDescripcion(descripcion, nemonicoModulo);
 		// Respuesta
 		ResponseGenerico<Producto> response = new ResponseGenerico<>();
 		response.setListado(listaProducto);

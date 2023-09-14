@@ -3,8 +3,10 @@ package ec.gob.educacion.servicio.impl.catalogo;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ec.gob.educacion.modelo.catalogo.Modulo;
 import ec.gob.educacion.modelo.catalogo.Producto;
 import ec.gob.educacion.repositorio.catalogo.ProductoRepositorio;
+import ec.gob.educacion.servicio.catalogo.ModuloServicio;
 import ec.gob.educacion.servicio.catalogo.ProductoServicio;
 import ec.gob.educacion.venta.resources.Constantes;
 
@@ -13,6 +15,8 @@ public class ProductoServicioImpl implements ProductoServicio {
 
 	@Autowired
 	private ProductoRepositorio productoRepositorio;
+	@Autowired
+	private ModuloServicio moduloServicio;
 
 	@Override
 	public List<Producto> listarTodosProducto() {
@@ -20,8 +24,8 @@ public class ProductoServicioImpl implements ProductoServicio {
 	}
 
 	@Override
-	public List<Producto> listarProductoActivo(String estado) {
-		return productoRepositorio.findByEstadoOrderByCodigo(estado);
+	public List<Producto> listarProductoActivo(String nemonicoModulo) {
+		return productoRepositorio.listarProductoActivo(nemonicoModulo);
 	}
 
 	@Override
@@ -30,8 +34,8 @@ public class ProductoServicioImpl implements ProductoServicio {
 	}
 
 	@Override
-	public List<Producto> listarProductoPorDescripcion(String descripcion) {
-		return productoRepositorio.findByDescripcion(descripcion);
+	public List<Producto> listarProductoPorDescripcion(String descripcion, String nemonicoModulo) {
+		return productoRepositorio.findByDescripcion(descripcion, nemonicoModulo);
 	}
 
 	@Override
@@ -41,6 +45,13 @@ public class ProductoServicioImpl implements ProductoServicio {
 
 	@Override
 	public Producto registrar(Producto producto) {
+		if (producto.getCodModulo() != 0) {
+			Modulo modulo = new Modulo();
+			modulo = moduloServicio.buscarModuloPorCodigo(producto.getCodModulo());
+			if (modulo != null) {
+				producto.setModulo(modulo);
+			}
+		}
 		return productoRepositorio.save(producto);
 	}
 
