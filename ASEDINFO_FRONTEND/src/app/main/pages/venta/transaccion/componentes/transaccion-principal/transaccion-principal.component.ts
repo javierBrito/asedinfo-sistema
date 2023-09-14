@@ -37,7 +37,7 @@ export class TransaccionPrincipalComponent implements OnInit {
   public codigoSede = null;
   public descripcion: string;
   public colorFila: string;
-  public fechaHoy: string;
+  public fechaHoy = dayjs(new Date).format("YYYY-MM-DD");
 
   /*LISTAS*/
   public listaTransaccion: Transaccion[] = [];
@@ -87,7 +87,6 @@ export class TransaccionPrincipalComponent implements OnInit {
     this.selectedTab = 0;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.sede = this.currentUser.sede;
-    this.fechaHoy = dayjs(new Date).format("YYYY-MM-DD");
   }
 
   ngOnInit() {

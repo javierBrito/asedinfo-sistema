@@ -2,9 +2,11 @@ export interface Itransaccion {
     codigo?: number;
     codCliente?: number;
     codPersona?: number;
+    codModulo?: number;
+    codOperacion?: number;
     descripcion?: string;
-    precioVenta?: number;
-    numProductoVenta?: number;
+    precio?: number;
+    numProducto?: number;
     numMes?: number;
     fechaInicio?: string;
     fechaFin?: string;
@@ -13,5 +15,7 @@ export interface Itransaccion {
 
     cliente?: any,
     producto?: any,
+    modulo?: any,
+    operacion?: any,
     colorFila: string;
 }

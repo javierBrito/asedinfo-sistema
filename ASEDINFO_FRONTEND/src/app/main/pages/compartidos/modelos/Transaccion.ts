@@ -25,23 +25,35 @@ export class Transaccion implements Itransaccion {
     set codProducto(value: number) {
         set(this, 'data.codProducto', value);
     }
+    get codModulo(): number {
+        return get(this, 'data.codModulo');
+    }
+    set codModulo(value: number) {
+        set(this, 'data.codModulo', value);
+    }
+    get codOperacion(): number {
+        return get(this, 'data.codOperacion');
+    }
+    set codOperacion(value: number) {
+        set(this, 'data.codOperacion', value);
+    }
     get descripcion(): string {
         return get(this, 'data.descripcion');
     }
     set descripcion(value: string) {
         set(this, 'data.descripcion', value);
     }
-    get precioVenta(): number {
-        return get(this, 'data.precioVenta');
+    get precio(): number {
+        return get(this, 'data.precio');
     }
-    set precioVenta(value: number) {
-        set(this, 'data.precioVenta', value);
+    set precio(value: number) {
+        set(this, 'data.precio', value);
     }
-    get numProductoVenta(): number {
-        return get(this, 'data.numProductoVenta');
+    get numProducto(): number {
+        return get(this, 'data.numProducto');
     }
-    set numProductoVenta(value: number) {
-        set(this, 'data.numProductoVenta', value);
+    set numProducto(value: number) {
+        set(this, 'data.numProducto', value);
     }
     get numMes(): number {
         return get(this, 'data.numMes');
@@ -86,6 +98,20 @@ export class Transaccion implements Itransaccion {
     }
     set producto(value: any) {
         set(this, 'data.producto', value);
+    }
+
+    get modulo(): any {
+        return get(this, 'data.modulo');
+    }
+    set modulo(value: any) {
+        set(this, 'data.modulo', value);
+    }
+
+    get operacion(): any {
+        return get(this, 'data.operacion');
+    }
+    set operacion(value: any) {
+        set(this, 'data.operacion', value);
     }
 
     get colorFila(): string {

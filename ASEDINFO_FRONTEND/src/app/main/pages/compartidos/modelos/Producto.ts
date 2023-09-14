@@ -14,6 +14,13 @@ export class Producto implements Iproducto {
         set(this, 'data.codigo', value);
     }
 
+    get codModulo(): number {
+        return get(this, 'data.codModulo');
+    }
+    set codModulo(value: number) {
+        set(this, 'data.codModulo', value);
+    }
+
     get descripcion(): string {
         return get(this, 'data.descripcion');
     }
@@ -47,6 +54,13 @@ export class Producto implements Iproducto {
     }
     set estado(value: string) {
         set(this, 'data.estado', value);
+    }
+
+    get modulo(): any {
+        return get(this, 'data.estado');
+    }
+    set modulo(value: any) {
+        set(this, 'data.modulo', value);
     }
 
 }

@@ -17,14 +17,14 @@ export class ProductoService {
   listarProductoPorSede(codigoSede: number) {
     return this.http.get<Producto[]>(`${environment.url_seguridad}/catalogo/listarProductoPorSede/${codigoSede}`);
   }
-  listarProductoPorDescripcion(descripcion: string) {
-    return this.http.get<Producto[]>(`${environment.url_seguridad}/catalogo/listarProductoPorDescripcion/${descripcion}`);
+  listarProductoPorDescripcion(descripcion: string, nemonicoModulo: string) {
+    return this.http.get<Producto[]>(`${environment.url_seguridad}/catalogo/listarProductoPorDescripcion/${descripcion}/${nemonicoModulo}`);
   }
   listarTodosProducto(): Observable<any> | undefined {
     return this.http.get<any[]>(`${environment.url_seguridad}/catalogo/listarTodosProducto`);
   }
-  listarProductoActivo(): Observable<any> | undefined {
-    return this.http.get<any[]>(`${environment.url_seguridad}/catalogo/listarProductoActivo`);
+  listarProductoActivo(nemonicoModulo: string): Observable<any> | undefined {
+    return this.http.get<any[]>(`${environment.url_seguridad}/catalogo/listarProductoActivo/${nemonicoModulo}`);
   }
   listarProductoPadre(codigoAplicacion: number) {
     return this.http.get<Producto[]>(`${environment.url_seguridad}/catalogo/listarProductoPadre/${codigoAplicacion}`);
@@ -34,6 +34,17 @@ export class ProductoService {
   }
   guardarProducto(producto) {
     return this.http.post<Producto>(`${environment.url_seguridad}/catalogo/guardarProducto`, producto);
+  }
+
+  // Servicios de Modulo
+  buscarModuloPorCodigo(codigo: number) {
+    return this.http.get<Producto>(`${environment.url_seguridad}/catalogo/buscarModuloPorCodigo/${codigo}`);
+  }
+  listarModuloActivo(): Observable<any> | undefined {
+    return this.http.get<any[]>(`${environment.url_seguridad}/catalogo/listarModuloActivo`);
+  }
+  buscarModuloPorNemonico(nemonico: string) {
+    return this.http.get<Producto>(`${environment.url_seguridad}/catalogo/buscarModuloPorNemonico/${nemonico}`);
   }
 
 }

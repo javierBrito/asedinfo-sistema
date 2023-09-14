@@ -86,27 +86,27 @@
             </div>
             <div class="row form-group">
                 <div class="col-6">
-                    <label for="precioVenta"><b>{{'Precio(*): F-999.99'}}</b></label>
-                    <input type="number" name="precioVenta" formControlName="precioVenta" class="form-control"
-                        id="precioVenta" placeholder="999.99" step="0.01" min="0.01"
-                        [ngClass]="{'is-valid': precioVentaField?.dirty && !precioVentaField?.invalid && !precioVentaField?.errors && (precioVentaField?.value > precioVentaField?.value), 'is-invalid': precioVentaField?.dirty && precioVentaField?.invalid && precioVentaField?.errors  && !(precioVentaField?.value > precioVentaField?.value)}">
+                    <label for="precio"><b>{{'Precio(*): F-999.99'}}</b></label>
+                    <input type="number" name="precio" formControlName="precio" class="form-control"
+                        id="precio" placeholder="999.99" step="0.01" min="0.01"
+                        [ngClass]="{'is-valid': precioField?.dirty && !precioField?.invalid && !precioField?.errors && (precioField?.value > precioField?.value), 'is-invalid': precioField?.dirty && precioField?.invalid && precioField?.errors  && !(precioField?.value > precioField?.value)}">
                     <div class="valid-feedback">
                         <span>{{ "Exito"}}</span>
                     </div>
                     <div class="invalid-feedback">
-                        <span *ngIf="precioVentaField?.errors?.['required']">{{"Requerido"}}</span>
+                        <span *ngIf="precioField?.errors?.['required']">{{"Requerido"}}</span>
                     </div>
                 </div>
                 <div class="col-6">
-                    <label for="numProductoVenta"><b>{{'Cantidad(*): F-999'}}</b></label>
-                    <input type="number" name="numProductoVenta" formControlName="numProductoVenta" class="form-control"
-                        id="numProductoVenta" placeholder="999" step="001" min="001"
-                        [ngClass]="{'is-valid': numProductoVentaField?.dirty && !numProductoVentaField?.invalid && !numProductoVentaField?.errors && (numProductoVentaField?.value > numProductoVentaField?.value), 'is-invalid': numProductoVentaField?.dirty && numProductoVentaField?.invalid && numProductoVentaField?.errors  && !(numProductoVentaField?.value > numProductoVentaField?.value)}">
+                    <label for="numProducto"><b>{{'Cantidad(*): F-999'}}</b></label>
+                    <input type="number" name="numProducto" formControlName="numProducto" class="form-control"
+                        id="numProducto" placeholder="999" step="001" min="001"
+                        [ngClass]="{'is-valid': numProductoField?.dirty && !numProductoField?.invalid && !numProductoField?.errors && (numProductoField?.value > numProductoField?.value), 'is-invalid': numProductoField?.dirty && numProductoField?.invalid && numProductoField?.errors  && !(numProductoField?.value > numProductoField?.value)}">
                     <div class="valid-feedback">
                         <span>{{ "Exito"}}</span>
                     </div>
                     <div class="invalid-feedback">
-                        <span *ngIf="numProductoVentaField?.errors?.['required']">{{"Requerido"}}</span>
+                        <span *ngIf="numProductoField?.errors?.['required']">{{"Requerido"}}</span>
                     </div>
                 </div>
             </div>

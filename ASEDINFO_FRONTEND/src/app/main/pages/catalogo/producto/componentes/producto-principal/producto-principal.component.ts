@@ -10,6 +10,7 @@ import { Aplicacion } from 'app/main/pages/compartidos/modelos/Aplicacion';
 import { MyValidators } from 'app/utils/validators';
 import { SedeService } from 'app/main/pages/seguridad/sede/servicios/sede.service';
 import dayjs from "dayjs";
+import { Modulo } from 'app/main/pages/compartidos/modelos/Modulo';
 
 @Component({
   selector: 'app-producto-principal',
@@ -30,6 +31,7 @@ export class ProductoPrincipalComponent implements OnInit {
   public institucion: any;
   public codigoSede = null;
   public descripcion: string;
+  public nemonicoModulo: string = "VEN";
 
   /*LISTAS*/
   public listaProducto: Producto[] = [];
@@ -42,6 +44,7 @@ export class ProductoPrincipalComponent implements OnInit {
   /*OBJETOS*/
   private currentUser: LoginAplicacion;
   private sede: Sede;
+  private modulo: Modulo;
 
   /*DETAIL*/
   public showDetail: boolean;
@@ -88,11 +91,18 @@ export class ProductoPrincipalComponent implements OnInit {
     // Receptar la descripción de formProductoDescripcion.value
     let productoDescripcionTemp = this.formProductoDescripcion.value;
     this.descripcion = productoDescripcionTemp.descripcion;
-    this.productoService.listarProductoPorDescripcion(this.descripcion).subscribe(
+    this.productoService.listarProductoPorDescripcion(this.descripcion, this.nemonicoModulo).subscribe(
       (respuesta) => {
         this.listaProducto = respuesta['listado'];
         for (const ele of this.listaProducto) {
           ele.fechaRegistra = dayjs(ele.fechaRegistra).format("YYYY-MM-DD")
+          // Obtener modulo
+          this.productoService.buscarModuloPorCodigo(ele.codModulo).subscribe(
+            (respuesta) => {
+              this.modulo = respuesta['objeto'];
+              ele.modulo = this.modulo;
+            }
+          )
         }
       }
     );
@@ -154,7 +164,8 @@ export class ProductoPrincipalComponent implements OnInit {
     if (event.target.value.length != 10) {
       this.resetTheForm();
     } else {
-      this.listarProductoPorDescripcion();    }
+      this.listarProductoPorDescripcion();
+    }
   }
 
   resetTheForm(): void {

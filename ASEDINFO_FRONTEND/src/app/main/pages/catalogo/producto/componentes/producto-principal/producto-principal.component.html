@@ -51,9 +51,9 @@
                                                     <tr>
                                                         <th scope="col">#</th>
                                                         <th scope="col">Descripción</th>
-                                                        <th scope="col">Precio Costo</th>
-                                                        <th scope="col">Existencia Actual</th>
-                                                        <th scope="col">Fecha Registra</th>
+                                                        <th scope="col">Precio</th>
+                                                        <th scope="col">Existencia</th>
+                                                        <th scope="col">Modulo</th>
                                                         <th scope="col">Acciones</th>
                                                     </tr>
                                                 </thead>
@@ -61,10 +61,10 @@
                                                     <tr
                                                         *ngFor="let producto of listaProducto | paginate: {id:'paginacionMatutino', itemsPerPage: itemsRegistros, currentPage: page } ; let index=index">
                                                         <td>{{index+1}}</td>
-                                                        <td>{{producto.descripcion}}</td>
-                                                        <td>{{producto.precioCosto}}</td>
-                                                        <td>{{producto.numExistenciaActual}}</td>
-                                                        <td>{{producto.fechaRegistra}}</td>
+                                                        <td>{{producto?.descripcion}}</td>
+                                                        <td>{{producto?.precioCosto}}</td>
+                                                        <td>{{producto?.numExistenciaActual}}</td>
+                                                        <td>{{producto?.modulo?.nemonico}}</td>
                                                         <td>
                                                             <div class="btn-group" role="group"
                                                                 aria-label="Basic example">

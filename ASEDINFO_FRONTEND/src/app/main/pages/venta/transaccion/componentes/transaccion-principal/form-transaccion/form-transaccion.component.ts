@@ -13,6 +13,8 @@ import { Cliente } from 'app/main/pages/compartidos/modelos/Cliente';
 import { Producto } from 'app/main/pages/compartidos/modelos/Producto';
 import { PersonaService } from 'app/main/pages/catalogo/persona/servicios/persona.service';
 import { Persona } from 'app/main/pages/compartidos/modelos/Persona';
+import { Modulo } from 'app/main/pages/compartidos/modelos/Modulo';
+import { Operacion } from 'app/main/pages/compartidos/modelos/Operacion';
 
 @Component({
   selector: 'app-form-transaccion',
@@ -43,6 +45,9 @@ export class FormTransaccionComponent implements OnInit {
   private amieRegex: string;
   private currentUser: any;
   private numMes: number;
+  public nemonicoModulo: string = 'VEN';
+  public nemonicoOperacion: string = 'CRE';
+  public fechaHoy: string = dayjs(new Date).format("YYYY-MM-DD");
 
   /*FORMULARIOS*/
   public formTransaccion: FormGroup;
@@ -51,6 +56,8 @@ export class FormTransaccionComponent implements OnInit {
   public transaccion: Transaccion;
   public persona: Persona;
   public producto: Producto;
+  public modulo: Modulo;
+  public operacion: Operacion;
   public cliente: Cliente;
   public listaSede: Sede[];
   public listaCliente: Cliente[];
@@ -84,15 +91,17 @@ export class FormTransaccionComponent implements OnInit {
 
   ngOnInit() {
     this.listarSedeActivo();
+    this.buscarModuloPorNemonico();
+    this.buscarOperacionPorNemonico();
     if (this.transaccionEditar) {
       this.formTransaccion = this.formBuilder.group({
         codCliente: new FormControl(this.transaccionEditar.codCliente, Validators.required),
         codProducto: new FormControl(this.transaccionEditar.codProducto, Validators.required),
         descripcion: new FormControl(this.transaccionEditar.descripcion, Validators.required),
-        precioVenta: new FormControl(this.transaccionEditar.precioVenta, Validators.required),
+        precio: new FormControl(this.transaccionEditar.precio, Validators.required),
         fechaInicio: new FormControl(dayjs(this.transaccionEditar.fechaInicio).format("YYYY-MM-DD"), Validators.compose([Validators.required, ,])),
         fechaFin: new FormControl(dayjs(this.transaccionEditar.fechaFin).format("YYYY-MM-DD"), Validators.compose([Validators.required, ,])),
-        numProductoVenta: new FormControl(this.transaccionEditar.numProductoVenta, Validators.required),
+        numProducto: new FormControl(this.transaccionEditar.numProducto, Validators.required),
         numMes: new FormControl(this.transaccionEditar.numMes),
       })
       //AQUI TERMINA ACTUALIZAR
@@ -101,13 +110,29 @@ export class FormTransaccionComponent implements OnInit {
         codCliente: new FormControl('', Validators.required),
         codProducto: new FormControl('', Validators.required),
         descripcion: new FormControl('', Validators.required),
-        precioVenta: new FormControl('', Validators.required),
+        precio: new FormControl('', Validators.required),
         fechaInicio: new FormControl(dayjs(new Date).format("YYYY-MM-DD"), Validators.required),
         fechaFin: new FormControl(dayjs(new Date).format("YYYY-MM-DD"), Validators.required),
-        numProductoVenta: new FormControl('', Validators.required),
+        numProducto: new FormControl('', Validators.required),
         numMes: new FormControl(''),
       })
     }
+  }
+
+  buscarModuloPorNemonico() {
+    this.transaccionService.buscarModuloPorNemonico(this.nemonicoModulo).subscribe(
+      (respuesta) => {
+        this.modulo = respuesta['objeto'];
+      }
+    )
+  }
+
+  buscarOperacionPorNemonico() {
+    this.transaccionService.buscarOperacionPorNemonico(this.nemonicoOperacion).subscribe(
+      (respuesta) => {
+        this.operacion = respuesta['objeto'];
+      }
+    )
   }
 
   listarCliente() {
@@ -128,7 +153,7 @@ export class FormTransaccionComponent implements OnInit {
   }
 
   listarProducto() {
-    this.productoService.listarProductoActivo().subscribe(
+    this.productoService.listarProductoActivo(this.nemonicoModulo).subscribe(
       (respuesta) => {
         this.listaProducto = respuesta['listado'];
       }
@@ -147,37 +172,56 @@ export class FormTransaccionComponent implements OnInit {
   }
 
   async listarTransaccionPorDescripcion() {
-    this.transaccionService.listarTransaccionPorDescripcion(this.descripcionChild).subscribe(
-      (respuesta) => {
-        this.listaTransaccionChild = respuesta['listado']
-        for (const ele of this.listaTransaccionChild) {
-          ele.fechaInicio = dayjs(ele.fechaInicio).format("YYYY-MM-DD")
-          ele.fechaFin = dayjs(ele.fechaFin).format("YYYY-MM-DD")
-          // Obtener cliente
-          this.clienteService.buscarClientePorCodigo(ele.codCliente).subscribe(
-            (respuesta) => {
-              this.cliente = respuesta['objeto'];
-              ele.cliente = this.cliente;
-              // Obtener persona
-              this.personaService.buscarPersonaPorCodigo(ele.cliente.codPersona).subscribe(
-                (respuesta) => {
-                  this.persona = respuesta['objeto'];
-                  ele.cliente.persona = this.persona;
-                }
-              )
-            }
-          )
-          // Obtener producto
-          this.productoService.buscarProductoPorCodigo(ele.codProducto).subscribe(
-            (respuesta) => {
-              this.producto = respuesta['objeto'];
-              ele.producto = this.producto;
-            }
-          )
+    if (this.descripcionChild?.length != 0) {
+      this.transaccionService.listarTransaccionPorDescripcion(this.descripcionChild).subscribe(
+        (respuesta) => {
+          this.listaTransaccionChild = respuesta['listado'];
+          this.mostrarListaTransaccion();
         }
-        this.listaTransaccion.emit(this.listaTransaccionChild);
+      )
+    } else {
+      this.transaccionService.listarTransaccionActivo().subscribe(
+        (respuesta) => {
+          this.listaTransaccionChild = respuesta['listado'];
+          this.mostrarListaTransaccion();
+        }
+      )
+    };
+    this.listaTransaccion.emit(this.listaTransaccionChild);
+}
+
+  mostrarListaTransaccion() {
+    if (this.listaTransaccionChild?.length > 0) {
+      for (const ele of this.listaTransaccionChild) {
+        ele.colorFila = "green";
+        ele.fechaInicio = dayjs(ele.fechaInicio).format("YYYY-MM-DD");
+        ele.fechaFin = dayjs(ele.fechaFin).format("YYYY-MM-DD");
+        if (ele.fechaFin <= this.fechaHoy) {
+          ele.colorFila = "red";
+        }
+        // Obtener cliente
+        this.clienteService.buscarClientePorCodigo(ele.codCliente).subscribe(
+          (respuesta) => {
+            this.cliente = respuesta['objeto'];
+            ele.cliente = this.cliente;
+            // Obtener persona
+            this.personaService.buscarPersonaPorCodigo(ele.cliente.codPersona).subscribe(
+              (respuesta) => {
+                this.persona = respuesta['objeto'];
+                ele.cliente.persona = this.persona;
+              }
+            )
+          }
+        )
+        // Obtener producto
+        this.productoService.buscarProductoPorCodigo(ele.codProducto).subscribe(
+          (respuesta) => {
+            this.producto = respuesta['objeto'];
+            ele.producto = this.producto;
+          }
+        )
       }
-    );
+    }
   }
 
   patternAmie(amie: string) {
@@ -201,9 +245,11 @@ export class FormTransaccionComponent implements OnInit {
         codigo: 0,
         codCliente: transaccionTemp?.codCliente,
         codProducto: transaccionTemp?.codProducto,
+        codModulo: this.modulo?.codigo,
+        codOperacion: this.operacion?.codigo,
         descripcion: transaccionTemp?.descripcion,
-        precioVenta: transaccionTemp?.precioVenta,
-        numProductoVenta: transaccionTemp?.numProductoVenta,
+        precio: transaccionTemp?.precio,
+        numProducto: transaccionTemp?.numProducto,
         numMes: this.numMes,
         fechaInicio: dayjs(transaccionTemp?.fechaInicio).format("YYYY-MM-DD HH:mm:ss.SSS"),
         fechaFin: dayjs(fechaFinString).format("YYYY-MM-DD HH:mm:ss.SSS"),
@@ -213,7 +259,8 @@ export class FormTransaccionComponent implements OnInit {
     }
     if (this.transaccionEditar) {
       this.transaccion['data'].codigo = this.transaccionEditar.codigo;
-      this.transaccion['data'].descripcion = this.descripcionChild;
+      //this.transaccion['data'].descripcion = this.descripcionChild;
+      //this.descripcionChild = this.transaccion['data'].descripcion;
       this.transaccionService.guardarTransaccion(this.transaccion['data']).subscribe({
         next: (response) => {
           this.listarTransaccionPorDescripcion();
@@ -276,17 +323,17 @@ export class FormTransaccionComponent implements OnInit {
       fechaFinDate.setMonth(fechaFinDate.getMonth() + this.numMes);
       fechaFinString = dayjs(fechaFinDate.getFullYear() + "-" + (fechaFinDate.getMonth() + 1) + "-" + fechaFinDate.getDate()).format("YYYY-MM-DD");
       this.formTransaccion.controls.fechaFin.setValue(fechaFinString);
-    } 
+    }
   }
 
   get descripcionField() {
     return this.formTransaccion.get('descripcion');
   }
-  get precioVentaField() {
-    return this.formTransaccion.get('precioVenta');
+  get precioField() {
+    return this.formTransaccion.get('precio');
   }
-  get numProductoVentaField() {
-    return this.formTransaccion.get('numProductoVenta');
+  get numProductoField() {
+    return this.formTransaccion.get('numProducto');
   }
   get fechaRegistraField() {
     return this.formTransaccion.get('fechaRegistra');

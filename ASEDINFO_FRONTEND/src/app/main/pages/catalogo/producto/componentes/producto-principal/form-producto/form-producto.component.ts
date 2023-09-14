@@ -8,6 +8,7 @@ import { DetailComponent } from 'app/main/pages/catalogo/producto/componentes/de
 import { ProductoService } from '../../../servicios/producto.service';
 import { SedeService } from 'app/main/pages/seguridad/sede/servicios/sede.service';
 import dayjs from "dayjs";
+import { Modulo } from 'app/main/pages/compartidos/modelos/Modulo';
 
 @Component({
   selector: 'app-form-producto',
@@ -37,6 +38,7 @@ export class FormProductoComponent implements OnInit {
   public showDetail: boolean;
   private amieRegex: string;
   private currentUser: any;
+  private nemonicoModulo: string = "VEN";
 
   /*FORMULARIOS*/
   public formProducto: FormGroup;
@@ -44,6 +46,7 @@ export class FormProductoComponent implements OnInit {
   /*OBJETOS*/
   public producto: Producto;
   public listaSede: Sede[];
+  public listaModulo: Modulo[];
   public listaRespuesta = [
     { valor: "SI" },
     { valor: "NO" },
@@ -68,8 +71,10 @@ export class FormProductoComponent implements OnInit {
 
   ngOnInit() {
     this.listarSedeActivo();
+    this.listarModuloActivo();
     if (this.productoEditar) {
       this.formProducto = this.formBuilder.group({
+        codModulo: new FormControl(this.productoEditar.codModulo, Validators.required),
         descripcion: new FormControl(this.productoEditar.descripcion, Validators.required),
         precioCosto: new FormControl(this.productoEditar.precioCosto, Validators.required),
         fechaRegistra: new FormControl(dayjs(this.productoEditar.fechaRegistra).format("YYYY-MM-DD"), Validators.compose([Validators.required, ,])),
@@ -78,6 +83,7 @@ export class FormProductoComponent implements OnInit {
       //AQUI TERMINA ACTUALIZAR
     } else {
       this.formProducto = this.formBuilder.group({
+        codModulo: new FormControl('', Validators.required),
         descripcion: new FormControl('', Validators.required),
         precioCosto: new FormControl('', Validators.required),
         fechaRegistra: new FormControl(dayjs(new Date).format("YYYY-MM-DD"), Validators.required),
@@ -97,8 +103,19 @@ export class FormProductoComponent implements OnInit {
     });
   }
 
+  listarModuloActivo() {
+    this.productoService.listarModuloActivo().subscribe({
+      next: (response) => {
+        this.listaModulo = response['listado'];
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
   async listarProductoPorDescripcion() {
-    this.productoService.listarProductoPorDescripcion(this.descripcionChild).subscribe(
+    this.productoService.listarProductoPorDescripcion(this.descripcionChild, this.nemonicoModulo).subscribe(
       (respuesta) => {
         this.listaProductoChild = respuesta['listado']
         for (const ele of this.listaProductoChild) {
@@ -121,10 +138,11 @@ export class FormProductoComponent implements OnInit {
       let productoTemp = this.formProducto.value;
       this.producto = new Producto({
         codigo: 0,
+        codModulo: productoTemp.codModulo,
         descripcion: productoTemp.descripcion,
         precioCosto: productoTemp.precioCosto,
         numExistenciaActual: productoTemp.numExistenciaActual,
-        fechaRegistra: dayjs(productoTemp.fechaRegistra).format("YYYY-MM-DD HH:mm:ss.SSS"),
+        fechaRegistra: dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss.SSS"),
         estado: 'A',
       });
     }
@@ -195,6 +213,9 @@ export class FormProductoComponent implements OnInit {
   }
   get fechaRegistraField() {
     return this.formProducto.get('fechaRegistra');
+  }
+  get codModuloField() {
+    return this.formProducto.get('codModulo');
   }
 
 }

@@ -10,7 +10,21 @@
                 </div>
             </div>
             <div class="row form-group">
-                <div class="col-6">
+                <div class="col-12 flex justify-end card profile-header mb-2 was-validated">
+                    <label for="codModulo"><b>{{'Modulo(*): '}}</b></label>
+                    <select name="codModulo" formControlName="codModulo" required placeholder="Seleccione Modulo..."
+                        class="form-control mr-sm-2" id="codModulo" #t>
+                        <option [value]="" selected>Seleccionar Modulo</option>
+                        <option *ngFor="let modulo  of listaModulo" [value]="modulo.codigo">
+                            <span>{{modulo?.nemonico}}</span>
+                        </option>
+                    </select>
+                    <div class="valid-feedback"></div>
+                    <div class="invalid-feedback">Por favor seleccione una opción.</div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-12">
                     <label for="descripcion"><b>{{'Descripción(*): '}}</b></label>
                     <input type="text" name="descripcion" formControlName="descripcion" class="form-control"
                         id="descripcion" placeholder="Por favor, ingrese la descripción."
@@ -23,22 +37,10 @@
                         <span *ngIf="descripcionField?.errors?.['required']">{{"Requerido"}}</span>
                     </div>
                 </div>
-                <div class="col-6">
-                    <label for="fechaRegistra"><b>{{'Registra(*): '}}</b></label>
-                    <input type="date" name="fechaRegistra" formControlName="fechaRegistra" class="form-control"
-                        id="fechaRegistra"
-                        [ngClass]="{'is-valid': fechaRegistraField?.dirty && !fechaRegistraField?.invalid && !fechaRegistraField?.errors,'is-invalid': fechaRegistraField?.dirty && fechaRegistraField?.invalid && fechaRegistraField?.errors}">
-                    <div class="valid-feedback">
-                        <span>{{ "Exito"}}</span>
-                    </div>
-                    <div class="invalid-feedback">
-                        <span *ngIf="fechaRegistraField?.errors?.['required']">{{"Requerido"}}</span>
-                    </div>
-                </div>
             </div>
             <div class="row form-group">
-                <div class="col-12">
-                    <label for="precioCosto"><b>{{'Precio Costo(*): Formato 999.99'}}</b></label>
+                <div class="col-6">
+                    <label for="precioCosto"><b>{{'Precio(*): F-999.99'}}</b></label>
                     <input type="number" name="precioCosto" formControlName="precioCosto" class="form-control"
                         id="precioCosto" placeholder="999.99" step="0.01" min="0.01"
                         [ngClass]="{'is-valid': precioCostoField?.dirty && !precioCostoField?.invalid && !precioCostoField?.errors && (precioCostoField?.value > precioCostoField?.value), 'is-invalid': precioCostoField?.dirty && precioCostoField?.invalid && precioCostoField?.errors  && !(precioCostoField?.value > precioCostoField?.value)}">
@@ -49,10 +51,8 @@
                         <span *ngIf="precioCostoField?.errors?.['required']">{{"Requerido"}}</span>
                     </div>
                 </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-12">
-                    <label for="numExistenciaActual"><b>{{'Existencia Actual(*): Formato 999'}}</b></label>
+                <div class="col-6">
+                    <label for="numExistenciaActual"><b>{{'Existencia(*): F-999'}}</b></label>
                     <input type="number" name="numExistenciaActual" formControlName="numExistenciaActual" class="form-control" id="numExistenciaActual"
                         placeholder="999" step="001" min="001"
                         [ngClass]="{'is-valid': numExistenciaActualField?.dirty && !numExistenciaActualField?.invalid && !numExistenciaActualField?.errors && (numExistenciaActualField?.value > numExistenciaActualField?.value), 'is-invalid': numExistenciaActualField?.dirty && numExistenciaActualField?.invalid && numExistenciaActualField?.errors  && !(numExistenciaActualField?.value > numExistenciaActualField?.value)}">
