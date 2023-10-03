@@ -1,4 +1,4 @@
-package ec.gob.educacion.controlador.venta;
+package ec.gob.educacion.controlador.catalogo;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ec.gob.educacion.controlador.util.Constantes;
 import ec.gob.educacion.modelo.response.ResponseGenerico;
-import ec.gob.educacion.modelo.venta.Transaccion;
+import ec.gob.educacion.modelo.catalogo.Transaccion;
 import ec.gob.educacion.venta.resources.EstadoEnum;
-import ec.gob.educacion.servicio.venta.TransaccionServicio;
+import ec.gob.educacion.servicio.catalogo.TransaccionServicio;
 
 @RestController
-@RequestMapping("venta/")
+@RequestMapping("catalogo/")
 public class TransaccionControlador {
 
 	@Autowired
@@ -34,9 +34,9 @@ public class TransaccionControlador {
 		return response;
 	}
 
-	@GetMapping(value = "listarTransaccionActivo")
-	public ResponseGenerico<Transaccion> listarTransaccionActivo() {
-		List<Transaccion> listaTransaccion = transaccionServicio.listarTransaccionActivo(EstadoEnum.ACTIVO.getDescripcion());
+	@GetMapping(value = "listarTransaccionActivo/{nemonicoModulo}")
+	public ResponseGenerico<Transaccion> listarTransaccionActivo(@PathVariable("nemonicoModulo") String nemonicoModulo) {
+		List<Transaccion> listaTransaccion = transaccionServicio.listarTransaccionActivo(nemonicoModulo);
 		// Respuesta
 		ResponseGenerico<Transaccion> response = new ResponseGenerico<>();
 		response.setListado(listaTransaccion);
@@ -49,6 +49,30 @@ public class TransaccionControlador {
 	@GetMapping(value = "listarTransaccionPorDescripcion/{descripcion}")
 	public ResponseGenerico<Transaccion> listarTransaccionPorDescripcion(@PathVariable("descripcion") String descripcion) {
 		List<Transaccion> listaTransaccion = transaccionServicio.listarTransaccionPorDescripcion(descripcion);
+		// Respuesta
+		ResponseGenerico<Transaccion> response = new ResponseGenerico<>();
+		response.setListado(listaTransaccion);
+		response.setTotalRegistros((long) listaTransaccion.size());
+		response.setCodigoRespuesta(Constantes.CODIGO_RESPUESTA_OK);
+		response.setMensaje(Constantes.MENSAJE_OK);
+		return response;
+	}
+
+	@GetMapping(value = "listarTransaccionPorRangoFechas/{fechaInicio}/{fechaFin}")
+	public ResponseGenerico<Transaccion> listarTransaccionPorRangoFechas(@PathVariable("fechaInicio") String fechaInicio, @PathVariable("fechaFin") String fechaFin) {
+		List<Transaccion> listaTransaccion = transaccionServicio.listarTransaccionPorRangoFechas(fechaInicio, fechaFin);
+		// Respuesta
+		ResponseGenerico<Transaccion> response = new ResponseGenerico<>();
+		response.setListado(listaTransaccion);
+		response.setTotalRegistros((long) listaTransaccion.size());
+		response.setCodigoRespuesta(Constantes.CODIGO_RESPUESTA_OK);
+		response.setMensaje(Constantes.MENSAJE_OK);
+		return response;
+	}
+
+	@GetMapping(value = "listarTransaccionACaducarse/{numDias}")
+	public ResponseGenerico<Transaccion> listarTransaccionACaducarse(@PathVariable("numDias") int numDias) {
+		List<Transaccion> listaTransaccion = transaccionServicio.listarTransaccionACaducarse(numDias);
 		// Respuesta
 		ResponseGenerico<Transaccion> response = new ResponseGenerico<>();
 		response.setListado(listaTransaccion);
