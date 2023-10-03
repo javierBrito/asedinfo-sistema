@@ -81,12 +81,12 @@ export class FormClienteComponent implements OnInit {
         ])),
         nombres: new FormControl(this.personaEditar?.nombres, Validators.required),
         apellidos: new FormControl(this.personaEditar?.apellidos, Validators.required),
-        fechaNacimiento: new FormControl(dayjs(this.personaEditar?.fechaNacimiento).format("YYYY-MM-DD"), Validators.compose([Validators.required, ,])),
-        direccion: new FormControl(this.personaEditar?.direccion, Validators.required),
+        fechaNacimiento: new FormControl(dayjs(this.personaEditar?.fechaNacimiento).format("YYYY-MM-DD")),
+        direccion: new FormControl(this.personaEditar?.direccion),
         celular: new FormControl(this.personaEditar?.celular, Validators.required),
         correo: new FormControl(this.personaEditar?.correo, Validators.required),
-        fechaInicio: new FormControl(dayjs(this.personaEditar?.cliente?.fechaInicio).format("YYYY-MM-DD"), Validators.compose([Validators.required, ,])),
-        tipoCliente: new FormControl(this.personaEditar?.cliente?.tipoCliente, Validators.required),
+        fechaInicio: new FormControl(dayjs(this.personaEditar?.cliente?.fechaInicio).format("YYYY-MM-DD")),
+        tipoCliente: new FormControl(this.personaEditar?.cliente?.tipoCliente),
       })
       //AQUI TERMINA ACTUALIZAR
     } else {
@@ -100,16 +100,15 @@ export class FormClienteComponent implements OnInit {
         ])),
         nombres: new FormControl('', Validators.required),
         apellidos: new FormControl('', Validators.required),
-        fechaNacimiento: new FormControl('', Validators.required),
-        direccion: new FormControl('', Validators.required),
+        fechaNacimiento: new FormControl(''),
+        direccion: new FormControl(''),
         celular: new FormControl('', Validators.required),
         correo: new FormControl('', Validators.required),
-        fechaInicio: new FormControl(dayjs(new Date()).format("YYYY-MM-DD"), Validators.required),
-        tipoCliente: new FormControl('', Validators.required),
+        fechaInicio: new FormControl(dayjs(new Date()).format("YYYY-MM-DD")),
+        tipoCliente: new FormControl(''),
       })
     }
   }
-
 
   async listarClientePorIdentificacion() {
     this.personaService.listarPersonaPorIdentificacion(this.identificacionChild).subscribe(

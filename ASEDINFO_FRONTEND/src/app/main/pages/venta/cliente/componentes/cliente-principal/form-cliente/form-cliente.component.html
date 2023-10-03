@@ -42,7 +42,7 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <label for="fechaNacimiento"><b>{{'Nacimiento(*): '}}</b></label>
+                    <label for="fechaNacimiento"><b>{{'Nacimiento: '}}</b></label>
                     <input type="date" name="fechaNacimiento" formControlName="fechaNacimiento" class="form-control"
                         id="fechaNacimiento" 
                         [ngClass]="{'is-valid': fechaNacimientoField?.dirty && !fechaNacimientoField?.invalid && !fechaNacimientoField?.errors,'is-invalid': fechaNacimientoField?.dirty && fechaNacimientoField?.invalid && fechaNacimientoField?.errors}">
@@ -82,7 +82,7 @@
             </div>
             <div class="row form-group">
                 <div class="col-12">
-                    <label for="direccion"><b>{{'Dirección(*): '}}</b></label>
+                    <label for="direccion"><b>{{'Dirección: '}}</b></label>
                     <input type="text" name="direccion" formControlName="direccion"
                         class="form-control" id="direccion"
                         oninput="direccion.value = direccion.value.toUpperCase()"
@@ -134,7 +134,7 @@
             </div>
             <div class="row form-group">
                 <div class="col-6">
-                    <label for="fechaInicio"><b>{{'Inicio(*): '}}</b></label>
+                    <label for="fechaInicio"><b>{{'Inicio: '}}</b></label>
                     <input type="date" name="fechaInicio" formControlName="fechaInicio" class="form-control"
                         id="fechaInicio" 
                         [ngClass]="{'is-valid': fechaInicioField?.dirty && !fechaInicioField?.invalid && !fechaInicioField?.errors,'is-invalid': fechaInicioField?.dirty && fechaInicioField?.invalid && fechaInicioField?.errors}">
@@ -146,7 +146,7 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <label for="tipoCliente"><b>{{'Tipo Cliente(*): '}}</b></label>
+                    <label for="tipoCliente"><b>{{'Tipo Cliente: '}}</b></label>
                     <input type="text" name="tipoCliente" formControlName="tipoCliente" class="form-control"
                         id="tipoCliente"
                         [ngClass]="{'is-valid': tipoClienteField?.dirty && !tipoClienteField?.invalid && !tipoClienteField?.errors, 'is-invalid': tipoClienteField?.dirty && tipoClienteField?.invalid && tipoClienteField?.errors}">

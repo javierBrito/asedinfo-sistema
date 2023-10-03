@@ -21,6 +21,13 @@ export class Producto implements Iproducto {
         set(this, 'data.codModulo', value);
     }
 
+    get codCategoria(): number {
+        return get(this, 'data.codCategoria');
+    }
+    set codCategoria(value: number) {
+        set(this, 'data.codCategoria', value);
+    }
+
     get descripcion(): string {
         return get(this, 'data.descripcion');
     }
@@ -35,11 +42,25 @@ export class Producto implements Iproducto {
         set(this, 'data.precioCosto', value);
     }
 
+    get precioMayoreo(): number {
+        return get(this, 'data.precioMayoreo');
+    }
+    set precioMayoreo(value: number) {
+        set(this, 'data.precioMayoreo', value);
+    }
+
     get numExistenciaActual(): number {
         return get(this, 'data.numExistenciaActual');
     }
     set numExistenciaActual(value: number) {
         set(this, 'data.numExistenciaActual', value);
+    }
+
+    get numExistenciaMinima(): number {
+        return get(this, 'data.numExistenciaMinima');
+    }
+    set numExistenciaMinima(value: number) {
+        set(this, 'data.numExistenciaMinima', value);
     }
 
     get fechaRegistra(): string {
@@ -57,10 +78,17 @@ export class Producto implements Iproducto {
     }
 
     get modulo(): any {
-        return get(this, 'data.estado');
+        return get(this, 'data.modulo');
     }
     set modulo(value: any) {
         set(this, 'data.modulo', value);
+    }
+
+    get categoria(): any {
+        return get(this, 'data.categoria');
+    }
+    set categoria(value: any) {
+        set(this, 'data.categoria', value);
     }
 
 }

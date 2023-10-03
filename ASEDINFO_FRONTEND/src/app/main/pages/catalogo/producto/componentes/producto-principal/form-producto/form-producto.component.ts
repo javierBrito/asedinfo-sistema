@@ -39,6 +39,7 @@ export class FormProductoComponent implements OnInit {
   private amieRegex: string;
   private currentUser: any;
   private nemonicoModulo: string = "VEN";
+  private codModulo: number = 2;
 
   /*FORMULARIOS*/
   public formProducto: FormGroup;
@@ -60,6 +61,10 @@ export class FormProductoComponent implements OnInit {
     private formBuilder: FormBuilder,
     private mensajeIzi: MensajesIziToastService,
   ) {
+    /*CARGAR COMBOS*/
+    this.listarSedeActivo();
+    this.listarModuloActivo();
+
     this.load_btn = false;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     //this.sede = this.currentUser.sede;
@@ -70,24 +75,26 @@ export class FormProductoComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.listarSedeActivo();
-    this.listarModuloActivo();
     if (this.productoEditar) {
       this.formProducto = this.formBuilder.group({
         codModulo: new FormControl(this.productoEditar.codModulo, Validators.required),
         descripcion: new FormControl(this.productoEditar.descripcion, Validators.required),
         precioCosto: new FormControl(this.productoEditar.precioCosto, Validators.required),
+        precioMayoreo: new FormControl(this.productoEditar.precioMayoreo),
         fechaRegistra: new FormControl(dayjs(this.productoEditar.fechaRegistra).format("YYYY-MM-DD"), Validators.compose([Validators.required, ,])),
         numExistenciaActual: new FormControl(this.productoEditar.numExistenciaActual, Validators.required),
-      })
+        numExistenciaMinima: new FormControl(this.productoEditar.numExistenciaMinima),
+      });
       //AQUI TERMINA ACTUALIZAR
     } else {
       this.formProducto = this.formBuilder.group({
-        codModulo: new FormControl('', Validators.required),
+        codModulo: new FormControl(this.codModulo, Validators.required),
         descripcion: new FormControl('', Validators.required),
         precioCosto: new FormControl('', Validators.required),
+        precioMayoreo: new FormControl(''),
         fechaRegistra: new FormControl(dayjs(new Date).format("YYYY-MM-DD"), Validators.required),
         numExistenciaActual: new FormControl('', Validators.required),
+        numExistenciaMinima: new FormControl(''),
       })
     }
   }
@@ -103,14 +110,23 @@ export class FormProductoComponent implements OnInit {
     });
   }
 
-  listarModuloActivo() {
-    this.productoService.listarModuloActivo().subscribe({
-      next: (response) => {
-        this.listaModulo = response['listado'];
-      },
-      error: (error) => {
-        console.log(error);
-      }
+  async listarModuloActivo() {
+    return new Promise((resolve, rejects) => {
+      this.productoService.listarModuloActivo().subscribe({
+        next: (response) => {
+          this.listaModulo = response['listado'];
+          for (const ele of this.listaModulo) {
+            if (ele.nemonico == this.nemonicoModulo) {
+              this.codModulo = ele.codigo;
+            }
+          }
+          resolve("OK");
+        },
+        error: (error) => {
+          console.log(error);
+          rejects("Error");
+        }
+      });
     });
   }
 
@@ -141,10 +157,15 @@ export class FormProductoComponent implements OnInit {
         codModulo: productoTemp.codModulo,
         descripcion: productoTemp.descripcion,
         precioCosto: productoTemp.precioCosto,
+        precioMayoreo: productoTemp.precioMayoreo,
         numExistenciaActual: productoTemp.numExistenciaActual,
+        numExistenciaMinima: productoTemp.numExistenciaMinima,
         fechaRegistra: dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss.SSS"),
         estado: 'A',
       });
+    }
+    if (this.descripcionChild == undefined) {
+      this.descripcionChild = this.producto['data'].descripcion;
     }
     if (this.productoEditar) {
       this.producto['data'].codigo = this.productoEditar.codigo;
@@ -208,8 +229,14 @@ export class FormProductoComponent implements OnInit {
   get precioCostoField() {
     return this.formProducto.get('precioCosto');
   }
+  get precioMayoreoField() {
+    return this.formProducto.get('precioMayoreo');
+  }
   get numExistenciaActualField() {
     return this.formProducto.get('numExistenciaActual');
+  }
+  get numExistenciaMinimaField() {
+    return this.formProducto.get('numExistenciaMinima');
   }
   get fechaRegistraField() {
     return this.formProducto.get('fechaRegistra');

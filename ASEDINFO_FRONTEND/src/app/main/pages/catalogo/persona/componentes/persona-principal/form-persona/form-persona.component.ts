@@ -41,6 +41,7 @@ export class FormPersonaComponent implements OnInit {
 
   /*FORMULARIOS*/
   public formPersona: FormGroup;
+  public listaPersonaAux: Persona[];
 
   /*OBJETOS*/
   public persona: Persona;
@@ -80,8 +81,8 @@ export class FormPersonaComponent implements OnInit {
         ])),
         nombres: new FormControl(this.personaEditar.nombres, Validators.required),
         apellidos: new FormControl(this.personaEditar.apellidos, Validators.required),
-        fechaNacimiento: new FormControl(dayjs(this.personaEditar.fechaNacimiento).format("YYYY-MM-DD"), Validators.compose([Validators.required, ,])),
-        direccion: new FormControl(this.personaEditar.direccion, Validators.required),
+        fechaNacimiento: new FormControl(dayjs(this.personaEditar.fechaNacimiento).format("YYYY-MM-DD")),
+        direccion: new FormControl(this.personaEditar.direccion),
         celular: new FormControl(this.personaEditar.celular, Validators.required),
         correo: new FormControl(this.personaEditar.correo, Validators.required),
       })
@@ -97,8 +98,8 @@ export class FormPersonaComponent implements OnInit {
         ])),
         nombres: new FormControl('', Validators.required),
         apellidos: new FormControl('', Validators.required),
-        fechaNacimiento: new FormControl('', Validators.required),
-        direccion: new FormControl('', Validators.required),
+        fechaNacimiento: new FormControl(''),
+        direccion: new FormControl(''),
         celular: new FormControl('', Validators.required),
         correo: new FormControl('', Validators.required),
       })
@@ -211,6 +212,42 @@ export class FormPersonaComponent implements OnInit {
         event.preventDefault();
       }
     }
+  }
+
+  // Contar los caracteres de la cedula para activar boton <Buscar>
+  onKey(event) {
+    if (event.target.value.length != 10) {
+      this.resetTheForm();
+    } else {
+      this.verificarPersona();    }
+  }
+  
+  resetTheForm(): void {
+    this.formPersona.reset = null;
+  }
+
+  verificarPersona() {
+    // Receptar la identificación de formInscripcionCedula.value
+    let clienteIdentificacionTemp = this.formPersona.value;
+    this.identificacionChild = clienteIdentificacionTemp.identificacion;
+    this.personaService.listarPersonaPorIdentificacion(this.identificacionChild).subscribe({
+      next: (response) => {
+        this.listaPersonaAux = response['listado'];
+        this.persona = this.listaPersonaAux['0'];
+        if (this.persona?.codigo != null) {
+          this.formPersona.controls.fechaNacimiento.setValue(dayjs(this.persona?.fechaNacimiento).format("YYYY-MM-DD"));
+          this.formPersona.controls.nombres.setValue(this.persona?.nombres);
+          this.formPersona.controls.apellidos.setValue(this.persona?.apellidos);
+          this.formPersona.controls.direccion.setValue(this.persona?.direccion);
+          this.formPersona.controls.correo.setValue(this.persona?.correo);
+          this.formPersona.controls.celular.setValue(this.persona?.celular);
+        }
+        this.personaEditar = this.persona;
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 
   get identificacionField() {

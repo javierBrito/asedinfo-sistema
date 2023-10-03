@@ -13,7 +13,7 @@
                 <div class="col-6 flex justify-end card profile-header mb-2 was-validated">
                     <label for="codCliente"><b>{{'Cliente(*): '}}</b></label>
                     <select name="codCliente" formControlName="codCliente" required placeholder="Seleccione Cliente..."
-                        class="form-control mr-sm-2" id="codCliente" #t>
+                        class="form-control mr-sm-2" id="codCliente">
                         <option [value]="" selected>Seleccionar Cliente</option>
                         <option *ngFor="let cliente  of listaCliente" [value]="cliente.codigo">
                             <span>{{cliente?.persona?.nombres}}</span>
@@ -23,11 +23,12 @@
                     <div class="invalid-feedback">Por favor seleccione una opción.</div>
                 </div>
                 <div class="col-6 flex justify-end card profile-header mb-2 was-validated">
-                    <label for="codProducto"><b>{{'Producto(*): '}}</b></label>
-                    <select name="codProducto" formControlName="codProducto" required
-                        placeholder="Seleccione producto..." class="form-control mr-sm-2" id="codProducto" #t>
+                    <label for="producto"><b>{{'Producto(*): '}}</b></label>
+                    <select name="producto" formControlName="producto" required [compareWith]="compararProducto"
+                        (change)="obtenerProducto()" placeholder="Seleccione producto..." class="form-control mr-sm-2"
+                        id="producto">
                         <option [value]="" selected>Seleccionar producto</option>
-                        <option *ngFor="let producto  of listaProducto" [value]="producto.codigo">
+                        <option *ngFor="let producto  of listaProducto" [ngValue]="producto">
                             <span>{{producto?.descripcion}}</span>
                         </option>
                     </select>
@@ -51,7 +52,7 @@
                 </div>
             </div>
             <div class="row form-group">
-                <div class="col-4">
+                <div class="col-6">
                     <label for="fechaInicio"><b>{{'Fecha Inicio(*): '}}</b></label>
                     <input type="date" name="fechaInicio" formControlName="fechaInicio" class="form-control"
                         id="fechaInicio"
@@ -63,17 +64,19 @@
                         <span *ngIf="fechaInicioField?.errors?.['required']">{{"Requerido"}}</span>
                     </div>
                 </div>
-                <div class="col-4">
-                    <label for="numMes"><b>{{'Meses(*): F-999'}}</b></label>
+                <div class="col-6">
+                    <label for="numMes"><b>{{'Meses(*):'}}</b></label>
                     <input type="number" name="numMes" formControlName="numMes" class="form-control" id="numMes"
-                        placeholder="999" step="001" min="001" (keyup)="onKey($event)"
+                        placeholder="999" step="01" min="000" (keyup)="onKey($event)"
                         [ngClass]="{'is-valid': numMesField?.dirty && !numMesField?.invalid && !numMesField?.errors && (numMesField?.value > numMesField?.value), 'is-invalid': numMesField?.dirty && numMesField?.invalid && numMesField?.errors  && !(numMesField?.value > numMesField?.value)}">
                     <div class="valid-feedback">
                         <span>{{ "Exito"}}</span>
                     </div>
                 </div>
-                <div class="col-4">
-                    <label for="fechaFin"><b>{{'Fin(*): '}}</b></label>
+            </div>
+            <div class="row form-group">
+                <div class="col-6">
+                    <label for="fechaFin"><b>{{'Fecha Fin(*): '}}</b></label>
                     <input type="date" name="fechaFin" formControlName="fechaFin" class="form-control" id="fechaFin"
                         [ngClass]="{'is-valid': fechaFinField?.dirty && !fechaFinField?.invalid && !fechaFinField?.errors,'is-invalid': fechaFinField?.dirty && fechaFinField?.invalid && fechaFinField?.errors}">
                     <div class="valid-feedback">
@@ -83,12 +86,10 @@
                         <span *ngIf="fechaFinField?.errors?.['required']">{{"Requerido"}}</span>
                     </div>
                 </div>
-            </div>
-            <div class="row form-group">
                 <div class="col-6">
-                    <label for="precio"><b>{{'Precio(*): F-999.99'}}</b></label>
-                    <input type="number" name="precio" formControlName="precio" class="form-control"
-                        id="precio" placeholder="999.99" step="0.01" min="0.01"
+                    <label for="precio"><b>{{'Precio(*):'}}</b></label>
+                    <input type="number" name="precio" formControlName="precio" class="form-control" id="precio"
+                        placeholder="999.99" step="0.01" min="0.01" [attr.disabled]="true" 
                         [ngClass]="{'is-valid': precioField?.dirty && !precioField?.invalid && !precioField?.errors && (precioField?.value > precioField?.value), 'is-invalid': precioField?.dirty && precioField?.invalid && precioField?.errors  && !(precioField?.value > precioField?.value)}">
                     <div class="valid-feedback">
                         <span>{{ "Exito"}}</span>
@@ -97,8 +98,10 @@
                         <span *ngIf="precioField?.errors?.['required']">{{"Requerido"}}</span>
                     </div>
                 </div>
+            </div>
+            <div class="row form-group">
                 <div class="col-6">
-                    <label for="numProducto"><b>{{'Cantidad(*): F-999'}}</b></label>
+                    <label for="numProducto"><b>{{'Cantidad(*):'}}</b></label>
                     <input type="number" name="numProducto" formControlName="numProducto" class="form-control"
                         id="numProducto" placeholder="999" step="001" min="001"
                         [ngClass]="{'is-valid': numProductoField?.dirty && !numProductoField?.invalid && !numProductoField?.errors && (numProductoField?.value > numProductoField?.value), 'is-invalid': numProductoField?.dirty && numProductoField?.invalid && numProductoField?.errors  && !(numProductoField?.value > numProductoField?.value)}">
@@ -107,6 +110,19 @@
                     </div>
                     <div class="invalid-feedback">
                         <span *ngIf="numProductoField?.errors?.['required']">{{"Requerido"}}</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label for="numExistenciaActual"><b>{{'Existencia(*):'}}</b></label>
+                    <input type="number" name="numExistenciaActual" formControlName="numExistenciaActual"
+                        class="form-control" id="numExistenciaActual" placeholder="999" step="001" min="001"
+                        [attr.disabled]="true"
+                        [ngClass]="{'is-valid': numExistenciaActualField?.dirty && !numExistenciaActualField?.invalid && !numExistenciaActualField?.errors && (numExistenciaActualField?.value > numExistenciaActualField?.value), 'is-invalid': numExistenciaActualField?.dirty && numExistenciaActualField?.invalid && numExistenciaActualField?.errors  && !(numExistenciaActualField?.value > numExistenciaActualField?.value)}">
+                    <div class="valid-feedback">
+                        <span>{{ "Exito"}}</span>
+                    </div>
+                    <div class="invalid-feedback">
+                        <span *ngIf="numExistenciaActualField?.errors?.['required']">{{"Requerido"}}</span>
                     </div>
                 </div>
             </div>

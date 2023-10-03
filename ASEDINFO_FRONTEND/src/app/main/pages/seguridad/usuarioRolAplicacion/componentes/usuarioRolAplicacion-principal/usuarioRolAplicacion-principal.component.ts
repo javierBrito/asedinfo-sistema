@@ -116,7 +116,6 @@ export class UsuarioRolAplicacionPrincipalComponent implements OnInit {
       (respuesta) => {
         this.listaUsuario = respuesta['listado'];
         this.usuario = this.listaUsuario?.[0];
-        console.log("this.usuario = ", this.usuario);
         if (this.usuario != undefined) {
           this.codUsuario = this.usuario?.codigo;
           // Obtener Usuario Aplicación

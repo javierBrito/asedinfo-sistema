@@ -14,6 +14,7 @@
                     <label for="identificacion"><b>{{'Identificación(*): '}}</b></label>
                     <input type="text" name="identificacion" formControlName="identificacion" class="form-control"
                         (keypress)="validateFormat($event)" maxlength="10" id="identificacion"
+                        (keyup)="onKey($event)"
                         placeholder="Por favor, ingrese el número de cédula."
                         oninput="identificacion.value = identificacion.value.toUpperCase()"
                         [ngClass]="{'is-valid': identificacionField?.dirty && !identificacionField?.invalid && !identificacionField?.errors, 'is-invalid': identificacionField?.dirty && identificacionField?.invalid && identificacionField?.errors}">
@@ -41,7 +42,7 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <label for="fechaNacimiento"><b>{{'Nacimiento(*): '}}</b></label>
+                    <label for="fechaNacimiento"><b>{{'Nacimiento: '}}</b></label>
                     <input type="date" name="fechaNacimiento" formControlName="fechaNacimiento" class="form-control"
                         id="fechaNacimiento" oninput="fechaNacimiento.value = fechaNacimiento.value.toUpperCase()"
                         [ngClass]="{'is-valid': fechaNacimientoField?.dirty && !fechaNacimientoField?.invalid && !fechaNacimientoField?.errors,'is-invalid': fechaNacimientoField?.dirty && fechaNacimientoField?.invalid && fechaNacimientoField?.errors}">
@@ -81,7 +82,7 @@
             </div>
             <div class="row form-group">
                 <div class="col-12">
-                    <label for="direccion"><b>{{'Dirección(*): '}}</b></label>
+                    <label for="direccion"><b>{{'Dirección: '}}</b></label>
                     <input type="text" name="direccion" formControlName="direccion" class="form-control" id="direccion"
                         oninput="direccion.value = direccion.value.toUpperCase()"
                         [ngClass]="{'is-valid': direccionField?.dirty && !direccionField?.invalid && !direccionField?.errors, 'is-invalid': direccionField?.dirty && direccionField?.invalid && direccionField?.errors}">

@@ -86,12 +86,12 @@ export class FormSocioComponent implements OnInit {
         ])),
         nombres: new FormControl(this.personaEditar?.nombres, Validators.required),
         apellidos: new FormControl(this.personaEditar?.apellidos, Validators.required),
-        fechaNacimiento: new FormControl(dayjs(this.personaEditar?.fechaNacimiento).format("YYYY-MM-DD"), Validators.compose([Validators.required, ,])),
+        fechaNacimiento: new FormControl(dayjs(this.personaEditar?.fechaNacimiento).format("YYYY-MM-DD")),
         direccion: new FormControl(this.personaEditar?.direccion, Validators.required),
         celular: new FormControl(this.personaEditar?.celular, Validators.required),
         correo: new FormControl(this.personaEditar?.correo, Validators.required),
-        fechaInicio: new FormControl(dayjs(this.personaEditar?.socio?.fechaInicio).format("YYYY-MM-DD"), Validators.compose([Validators.required, ,])),
-        tipoSocio: new FormControl(this.personaEditar?.socio?.tipoSocio, Validators.required),
+        fechaInicio: new FormControl(dayjs(this.personaEditar?.socio?.fechaInicio).format("YYYY-MM-DD")),
+        tipoSocio: new FormControl(this.personaEditar?.socio?.tipoSocio),
       })
       //AQUI TERMINA ACTUALIZAR
     } else {
@@ -106,12 +106,12 @@ export class FormSocioComponent implements OnInit {
         sede: new FormControl(''),
         nombres: new FormControl('', Validators.required),
         apellidos: new FormControl('', Validators.required),
-        fechaNacimiento: new FormControl('', Validators.required),
+        fechaNacimiento: new FormControl(''),
         direccion: new FormControl('', Validators.required),
         celular: new FormControl('', Validators.required),
         correo: new FormControl('', Validators.required),
-        fechaInicio: new FormControl('', Validators.required),
-        tipoSocio: new FormControl('', Validators.required),
+        fechaInicio: new FormControl(''),
+        tipoSocio: new FormControl(''),
       })
     }
   }

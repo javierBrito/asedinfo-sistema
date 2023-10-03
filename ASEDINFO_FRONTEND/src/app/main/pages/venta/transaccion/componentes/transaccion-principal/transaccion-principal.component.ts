@@ -16,6 +16,9 @@ import { Persona } from 'app/main/pages/compartidos/modelos/Persona';
 import { Cliente } from 'app/main/pages/compartidos/modelos/Cliente';
 import { Producto } from 'app/main/pages/compartidos/modelos/Producto';
 import { ClienteService } from '../../../cliente/servicios/cliente.service';
+import { Modulo } from 'app/main/pages/compartidos/modelos/Modulo';
+import { Operacion } from 'app/main/pages/compartidos/modelos/Operacion';
+import { ReporteDTO } from 'app/main/pages/compartidos/modelos/ReporteDTO.model';
 
 @Component({
   selector: 'app-transaccion-principal',
@@ -37,7 +40,11 @@ export class TransaccionPrincipalComponent implements OnInit {
   public codigoSede = null;
   public descripcion: string;
   public colorFila: string;
+  public nemonicoModulo: string = 'VEN';
+  public nemonicoOperacion: string = 'CRE';
   public fechaHoy = dayjs(new Date).format("YYYY-MM-DD");
+  public fechaInicio: string;
+  public fechaFin: string;
 
   /*LISTAS*/
   public listaTransaccion: Transaccion[] = [];
@@ -53,6 +60,9 @@ export class TransaccionPrincipalComponent implements OnInit {
   private persona: Persona;
   private cliente: Cliente;
   private producto: Producto;
+  public modulo: Modulo;
+  public operacion: Operacion;
+  public reporteDTO: ReporteDTO;
 
   /*DETAIL*/
   public showDetail: boolean;
@@ -90,73 +100,123 @@ export class TransaccionPrincipalComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.buscarModuloPorNemonico();
+    this.buscarOperacionPorNemonico();
     this.colorFila = "green";
     if (this.listaTransaccionChild != null) {
       this.listaTransaccion = this.listaTransaccionChild;
     }
     this.formTransaccionDescripcion = this.formBuilder.group({
       descripcion: new FormControl('', Validators.required),
-    })
+      fechaInicio: new FormControl(dayjs(new Date).format("YYYY-MM-DD"), Validators.required),
+      fechaFin: new FormControl(dayjs(new Date).format("YYYY-MM-DD"), Validators.required),
+    });
+    this.listarTransaccionACaducarse();
   }
 
-  listarTransaccionPorDescripcion() {
+  buscarModuloPorNemonico() {
+    this.transaccionService.buscarModuloPorNemonico(this.nemonicoModulo).subscribe(
+      (respuesta) => {
+        this.modulo = respuesta['objeto'];
+      }
+    )
+  }
+
+  buscarOperacionPorNemonico() {
+    this.transaccionService.buscarOperacionPorNemonico(this.nemonicoOperacion).subscribe(
+      (respuesta) => {
+        this.operacion = respuesta['objeto'];
+      }
+    )
+  }
+
+  listarTransaccionACaducarse() {
+    this.transaccionService.listarTransaccionACaducarse(5).subscribe(
+      (respuesta) => {
+        this.listaTransaccion = respuesta['listado'];
+        if (this.listaTransaccion?.length > 0) {
+          this.mostrarListaTransaccion();
+          this.confirmarEnviarCorreo();
+        }
+      }
+    );
+  }
+
+  listarTransaccion() {
     this.listaTransaccion = [];
     // Receptar la descripción de formTransaccionDescripcion.value
     let transaccionDescripcionTemp = this.formTransaccionDescripcion.value;
-    this.descripcion = transaccionDescripcionTemp.descripcion;
+    this.fechaInicio = transaccionDescripcionTemp?.fechaInicio;
+    this.fechaFin = transaccionDescripcionTemp?.fechaFin;
+    this.descripcion = transaccionDescripcionTemp?.descripcion;
     if (this.descripcion?.length != 0) {
       this.transaccionService.listarTransaccionPorDescripcion(this.descripcion).subscribe(
         (respuesta) => {
           this.listaTransaccion = respuesta['listado'];
-          console.log("this.listaTransaccion = ", this.listaTransaccion);
-          this.mostrarListaTransaccion();
+          if (this.listaTransaccion?.length > 0) {
+            this.mostrarListaTransaccion();
+          }
         }
       )
     } else {
-      this.transaccionService.listarTransaccionActivo().subscribe(
-        (respuesta) => {
-          this.listaTransaccion = respuesta['listado'];
-          this.mostrarListaTransaccion();
-        }
-      )
+      if (this.fechaInicio?.length != 0 && this.fechaFin?.length != 0) {
+        //this.transaccionService.listarTransaccionPorRangoFechas(this.fechaInicio, this.fechaFin).subscribe(
+        this.transaccionService.listarTransaccionPorRangoFechas('2023-09-21', this.fechaFin).subscribe(
+          (respuesta) => {
+            this.listaTransaccion = respuesta['listado'];
+            if (this.listaTransaccion?.length > 0) {
+              this.mostrarListaTransaccion();
+            }
+          }
+        )
+      } else {
+        this.transaccionService.listarTransaccionActivo(this.modulo?.nemonico).subscribe(
+          (respuesta) => {
+            this.listaTransaccion = respuesta['listado'];
+            if (this.listaTransaccion?.length > 0) {
+              this.mostrarListaTransaccion();
+            }
+          }
+        )
+      }
     };
   }
 
   mostrarListaTransaccion() {
-    console.log("this.listaTransaccion?.length = ", this.listaTransaccion?.length);
-    if (this.listaTransaccion?.length > 0) {
-      for (const ele of this.listaTransaccion) {
-        ele.colorFila = "green";
-        ele.fechaInicio = dayjs(ele.fechaInicio).format("YYYY-MM-DD");
-        ele.fechaFin = dayjs(ele.fechaFin).format("YYYY-MM-DD");
-        console.log("ele.fechaFin = ", ele.fechaFin);
-        console.log("Date = ", dayjs(new Date).format("YYYY-MM-DD"))
-        if (ele.fechaFin <= this.fechaHoy) {
-          console.log("ok")
-          ele.colorFila = "red";
-        }
-        // Obtener cliente
-        this.clienteService.buscarClientePorCodigo(ele.codCliente).subscribe(
-          (respuesta) => {
-            this.cliente = respuesta['objeto'];
-            ele.cliente = this.cliente;
-            // Obtener persona
-            this.personaService.buscarPersonaPorCodigo(ele.cliente.codPersona).subscribe(
-              (respuesta) => {
-                this.persona = respuesta['objeto'];
-                ele.cliente.persona = this.persona;
-              }
-            )
-          }
-        )
-        // Obtener producto
-        this.productoService.buscarProductoPorCodigo(ele.codProducto).subscribe(
-          (respuesta) => {
-            this.producto = respuesta['objeto'];
-            ele.producto = this.producto;
-          }
-        )
+    for (const ele of this.listaTransaccion) {
+      ele.colorFila = "green";
+      ele.fechaInicio = dayjs(ele.fechaInicio).format("YYYY-MM-DD");
+      ele.fechaFin = dayjs(ele.fechaFin).format("YYYY-MM-DD");
+
+      // Calcular la diferencia en dás de la fecha actual y final de la transacción
+      var diff = new Date(ele.fechaFin).getTime() - new Date(this.fechaHoy).getTime();
+      var numDias = diff / (1000 * 60 * 60 * 24);
+
+      //if (ele.fechaFin <= this.fechaHoy) {
+      if (!(numDias > 0 && numDias > 5)) {
+        ele.colorFila = "red";
       }
+      // Obtener producto
+      this.productoService.buscarProductoPorCodigo(ele?.codProducto).subscribe(
+        (respuesta) => {
+          this.producto = respuesta['objeto'];
+          ele.producto = this.producto;
+        }
+      )
+      // Obtener cliente
+      this.clienteService.buscarClientePorCodigo(ele?.codCliente).subscribe(
+        (respuesta) => {
+          this.cliente = respuesta['objeto'];
+          ele.cliente = this.cliente;
+          // Obtener persona
+          this.personaService.buscarPersonaPorCodigo(ele?.cliente?.codPersona).subscribe(
+            (respuesta) => {
+              this.persona = respuesta['objeto'];
+              ele.cliente.persona = this.persona;
+            }
+          )
+        }
+      )
     }
   }
 
@@ -188,7 +248,7 @@ export class TransaccionPrincipalComponent implements OnInit {
           // Hicieron click en "Sí, eliminar"
           this.transaccionService.eliminarTransaccionPorId(transaccion.codigo).subscribe({
             next: (response) => {
-              this.listarTransaccionPorDescripcion();
+              this.listarTransaccion();
               this.mensajeService.mensajeCorrecto('El registro ha sido borrada con éxito...');
             },
             error: (error) => {
@@ -216,7 +276,7 @@ export class TransaccionPrincipalComponent implements OnInit {
     if (event.target.value.length != 10) {
       this.resetTheForm();
     } else {
-      this.listarTransaccionPorDescripcion();
+      this.listarTransaccion();
     }
   }
 
@@ -243,9 +303,62 @@ export class TransaccionPrincipalComponent implements OnInit {
     }
   }
 
+  confirmarEnviarCorreo() {
+    Swal
+      .fire({
+        title: "Continuar envío Correo...",
+        text: "¿Quiere enviar el correo?'",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: "Sí, enviar",
+        cancelButtonText: "No, cancelar",
+      })
+      .then(async resultado => {
+        if (resultado.isConfirmed) {
+          //Swal.fire('Saved!', '', 'success')
+          this.enviarCorreo();
+        } else if (resultado.isDismissed) {
+          //Swal.fire('Changes are not saved', '', 'info')
+        }
+      });
+  }
+
+  enviarCorreo() {
+    this.reporteDTO = new ReporteDTO({
+      cedula: "",
+      apellidoNombre: "",
+      fechaNacimiento: "",
+      edad: "",
+      from: "transparenciame@educacion.gob.ec",
+      nombreArchivo: "lista_caducarse_" + ".pdf",
+      subject: "Lista de servicios a caducarse - LISTACADUCARSE",
+      text: "<b>Texto en html, se lo genera en el servicio</b>",
+      //to: "javier.brito@educacion.gob.ec"      
+      to: "vjbritoa@hotmail.com",
+    });
+    this.transaccionService.enviarCorreo(this.reporteDTO['data']).subscribe({
+      next: (respuesta) => {
+        if (respuesta['codigoRespuesta'] == "Ok") {
+          this.mensajeService.mensajeCorrecto('Se a enviado el correo a ' + this.reporteDTO['data'].to);
+        } else {
+          this.mensajeService.mensajeError(respuesta['mensaje']);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    })
+  }
+
   /* Variables del html, para receptar datos y validaciones*/
   get descripcionField() {
     return this.formTransaccionDescripcion.get('descripcion');
+  }
+  get fechaInicioField() {
+    return this.formTransaccionDescripcion.get('fechaInicio');
+  }
+  get fechaFinField() {
+    return this.formTransaccionDescripcion.get('fechaFin');
   }
 
 }

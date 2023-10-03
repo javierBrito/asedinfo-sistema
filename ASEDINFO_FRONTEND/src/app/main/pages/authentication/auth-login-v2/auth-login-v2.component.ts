@@ -34,6 +34,7 @@ export class AuthLoginV2Component implements OnInit {
   public returnUrl: string;
   public error = '';
   public passwordTextType: boolean;
+  public aplicacionVEN: boolean = false;
   menu: any;
 
   // Private
@@ -124,6 +125,7 @@ export class AuthLoginV2Component implements OnInit {
         data => {
           if (data.accesoConcedido == true) {
             this.obtenerMenu();
+
             this._router.navigate([this.returnUrl]);
             // jbrito-20230114
             //this.modalService.open(this.modal_acuerdo_confidencialidad, this.modalOption).result.then(result => {
@@ -171,6 +173,7 @@ export class AuthLoginV2Component implements OnInit {
   // -----------------------------------------------------------------------------------------------------
   obtenerRoles(roles: Rol[]): CoreMenu[] {
     var menuItem: CoreMenu[] = [];
+    //console.log("roles = ", roles['0']['aplicacion'].prefijo);
     roles.forEach(rol => {
       var item: CoreMenu =
       {
@@ -178,6 +181,10 @@ export class AuthLoginV2Component implements OnInit {
         type: 'section',
         title: rol.nombre,
       };
+      if (rol?.aplicacion?.prefijo == 'VEN') {
+        this.aplicacionVEN = true;
+        this._router.navigate(['/pages/venta/transaccion'])
+      }
       if (rol.menu.length > 0) {
         item.children = this.obtenerRecursos(rol.menu);
       } else {

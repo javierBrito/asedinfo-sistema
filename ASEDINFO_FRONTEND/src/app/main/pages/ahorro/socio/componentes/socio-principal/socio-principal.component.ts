@@ -101,7 +101,6 @@ export class SocioPrincipalComponent implements OnInit {
     this.personaService.listarPersonaPorIdentificacion(this.identificacion).subscribe(
       (respuesta) => {
         this.listaPersona = respuesta['listado'];
-        console.log("this.listaPersona = ", this.listaPersona);
         for (const ele of this.listaPersona) {
           ele.fechaNacimiento = dayjs(ele.fechaNacimiento).format("YYYY-MM-DD")
           if (ele.codigo != null) {
@@ -109,7 +108,6 @@ export class SocioPrincipalComponent implements OnInit {
               (respuesta) => {
                 this.listaSocio = respuesta['listado'];                                                            
                 ele.socio = this.listaSocio[0];
-                console.log("ele.socio = ", ele.socio);
                 if (ele?.socio != undefined) {
                   ele.socio.fechaInicio = dayjs(ele.socio.fechaInicio).format("YYYY-MM-DD")
                 }
@@ -130,7 +128,6 @@ export class SocioPrincipalComponent implements OnInit {
   }
 
   openEditarDetail(persona: Persona) {
-    console.log("persona = ", persona);
     this.personaSeleccionado = persona;
     this.showDetail = true;
   }

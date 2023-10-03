@@ -7,6 +7,7 @@ export interface Itransaccion {
     descripcion?: string;
     precio?: number;
     numProducto?: number;
+    numExistenciaActual?: number;
     numMes?: number;
     fechaInicio?: string;
     fechaFin?: string;

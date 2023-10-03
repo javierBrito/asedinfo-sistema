@@ -55,6 +55,12 @@ export class Transaccion implements Itransaccion {
     set numProducto(value: number) {
         set(this, 'data.numProducto', value);
     }
+    get numExistenciaActual(): number {
+        return get(this, 'data.numExistenciaActual');
+    }
+    set numExistenciaActual(value: number) {
+        set(this, 'data.numExistenciaActual', value);
+    }
     get numMes(): number {
         return get(this, 'data.numMes');
     }
