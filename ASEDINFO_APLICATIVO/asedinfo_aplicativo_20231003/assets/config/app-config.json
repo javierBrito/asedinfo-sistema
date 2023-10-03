@@ -1,0 +1,14 @@
+{
+    "website": "Titulo",
+    "logo": "assets/img/logo.png",
+    "show_principal_post": true,
+    "num_posts_per_page": 10,
+    "num_comments_per_page": 5,
+    "social_networks": [
+        {
+            "name": "Facebook",
+            "icon": "fa fa-facebook",
+            "link": "https://www.facebook.com"
+        }
+    ]
+}
