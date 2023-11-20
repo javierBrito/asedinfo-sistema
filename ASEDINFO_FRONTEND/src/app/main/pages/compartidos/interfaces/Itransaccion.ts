@@ -19,4 +19,7 @@ export interface Itransaccion {
     modulo?: any,
     operacion?: any,
     colorFila: string;
+    descripcionProducto: string;
+    nombreCliente: string;
+    celular: string;
 }

@@ -95,6 +95,7 @@ export class FormTransaccionComponent implements OnInit {
     this.buscarModuloPorNemonico();
     this.buscarOperacionPorNemonico();
     if (this.transaccionEditar) {
+      this.codProducto = this.transaccionEditar?.producto?.codigo;
       this.formTransaccion = this.formBuilder.group({
         codCliente: new FormControl(this.transaccionEditar.codCliente, Validators.required),
         producto: new FormControl(this.transaccionEditar.producto, Validators.required),
@@ -254,6 +255,9 @@ export class FormTransaccionComponent implements OnInit {
         fechaFinDate.setMonth(fechaFinDate.getMonth() + this.numMes)
         fechaFinString = fechaFinDate.getFullYear() + "-" + (fechaFinDate.getMonth() + 1) + "-" + fechaFinDate.getDate();
       }
+      console.log("cod cliente = ", transaccionTemp?.codCliente);
+      console.log("cod producto = ", this.codProducto);
+  
       this.transaccion = new Transaccion({
         codigo: 0,
         codCliente: transaccionTemp?.codCliente,

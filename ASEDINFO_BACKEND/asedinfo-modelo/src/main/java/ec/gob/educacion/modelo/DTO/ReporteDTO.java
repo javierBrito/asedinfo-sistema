@@ -17,6 +17,7 @@ public class ReporteDTO {
 	private String nombreArchivo;
 	private List<String> listaStringBase64;
 	private byte[] reporteByte;
+	private String token;
 
 	public ReporteDTO() {
 		super();
@@ -108,5 +109,13 @@ public class ReporteDTO {
 
 	public void setReporteByte(byte[] reporteByte) {
 		this.reporteByte = reporteByte;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

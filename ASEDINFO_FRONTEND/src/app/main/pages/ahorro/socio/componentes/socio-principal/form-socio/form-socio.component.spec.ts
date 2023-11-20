@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormSocioComponent } from './form-socio.component';
 
 describe('FormSocioComponent', () => {
   let component: FormSocioComponent;

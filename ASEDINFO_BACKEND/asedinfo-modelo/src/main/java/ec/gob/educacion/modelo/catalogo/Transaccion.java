@@ -31,9 +31,6 @@ public class Transaccion implements java.io.Serializable {
 	@Column(name = "codigo", unique = true, nullable = false, precision = 10, scale = 0)
 	private Long codigo;
 
-	@Column(name = "cod_producto")
-	private Long codProducto;
-
 	@Column(name = "cod_operacion")
 	private Long codOperacion;
 
@@ -79,11 +76,24 @@ public class Transaccion implements java.io.Serializable {
 	@ManyToOne
 	@JoinColumn(name = "cod_cliente", nullable = false)
 	private Cliente cliente;
+	
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "cod_producto", nullable = false)
+	private Producto producto;
 
 	@Transient
 	private Long codModulo;
 	@Transient
 	private Long codCliente;
+	@Transient
+	private String nombreCliente;
+	@Transient
+	private String celular;
+	@Transient
+	private Long codProducto;
+	@Transient
+	private String descripcionProducto;
 
 	public Transaccion() {
 	}
@@ -140,6 +150,9 @@ public class Transaccion implements java.io.Serializable {
 	}
 
 	public Long getCodProducto() {
+		if (producto != null) {
+			codProducto = producto.getCodigo();
+		}
 		return codProducto;
 	}
 
@@ -222,4 +235,44 @@ public class Transaccion implements java.io.Serializable {
 		this.cliente = cliente;
 	}
 
+	public Producto getProducto() {
+		return producto;
+	}
+
+	public void setProducto(Producto producto) {
+		this.producto = producto;
+	}
+
+	public String getNombreCliente() {
+		if (cliente != null) {
+			nombreCliente = cliente.getPersona().getNombres() + " " + cliente.getPersona().getApellidos(); 
+		}
+		return nombreCliente;
+	}
+
+	public void setNombreCliente(String nombreCliente) {
+		this.nombreCliente = nombreCliente;
+	}
+
+	public String getDescripcionProducto() {
+		if (producto != null) {
+			descripcionProducto = producto.getDescripcion();
+		}
+		return descripcionProducto;
+	}
+
+	public void setDescripcionProducto(String descripcionProducto) {
+		this.descripcionProducto = descripcionProducto;
+	}
+
+	public String getCelular() {
+		if (cliente != null) {
+			celular = cliente.getPersona().getCelular(); 
+		}
+		return celular;
+	}
+
+	public void setCelular(String celular) {
+		this.celular = celular;
+	}
 }

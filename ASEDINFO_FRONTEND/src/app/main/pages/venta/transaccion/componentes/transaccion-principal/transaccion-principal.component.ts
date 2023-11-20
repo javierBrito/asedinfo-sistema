@@ -7,8 +7,6 @@ import { MensajeService } from 'app/main/pages/compartidos/servicios/mensaje/men
 import Swal from 'sweetalert2';
 import { TransaccionService } from '../../servicios/transaccion.service';
 import { Aplicacion } from 'app/main/pages/compartidos/modelos/Aplicacion';
-import { MyValidators } from 'app/utils/validators';
-import { SedeService } from 'app/main/pages/seguridad/sede/servicios/sede.service';
 import dayjs from "dayjs";
 import { PersonaService } from 'app/main/pages/catalogo/persona/servicios/persona.service';
 import { ProductoService } from 'app/main/pages/catalogo/producto/servicios/producto.service';
@@ -19,6 +17,8 @@ import { ClienteService } from '../../../cliente/servicios/cliente.service';
 import { Modulo } from 'app/main/pages/compartidos/modelos/Modulo';
 import { Operacion } from 'app/main/pages/compartidos/modelos/Operacion';
 import { ReporteDTO } from 'app/main/pages/compartidos/modelos/ReporteDTO.model';
+import { ajax } from 'jquery';
+import { Parametro } from 'app/main/pages/compartidos/modelos/Parametro';
 
 @Component({
   selector: 'app-transaccion-principal',
@@ -37,7 +37,6 @@ export class TransaccionPrincipalComponent implements OnInit {
   /*VARIABLES*/
   public codigo: number;
   public institucion: any;
-  public codigoSede = null;
   public descripcion: string;
   public colorFila: string;
   public nemonicoModulo: string = 'VEN';
@@ -45,9 +44,21 @@ export class TransaccionPrincipalComponent implements OnInit {
   public fechaHoy = dayjs(new Date).format("YYYY-MM-DD");
   public fechaInicio: string;
   public fechaFin: string;
+  public celularEnvioWhatsapp: string;
+  public codigoPostal: string = '593';
+  public descripcionProducto: string;
+  public mensaje: string;
+  public fechaFinMensaje: string;
+  public nombreCliente: string;
+  public enviarNotificacion: boolean;
+  public seEnvioWhatsapp: boolean;
+  public respuestaEnvioWhatsapp: string;
+  public token: string;
+  public celular: string;
 
   /*LISTAS*/
   public listaTransaccion: Transaccion[] = [];
+  public listaTransaccionAux: Transaccion[] = [];
   public listaAplicacion: Aplicacion[] = [];
   public listaPeriodoRegAniLec: any[];
 
@@ -61,8 +72,10 @@ export class TransaccionPrincipalComponent implements OnInit {
   private cliente: Cliente;
   private producto: Producto;
   public modulo: Modulo;
+  public parametro: Parametro;
   public operacion: Operacion;
   public reporteDTO: ReporteDTO;
+  public transaccion: Transaccion;
 
   /*DETAIL*/
   public showDetail: boolean;
@@ -82,15 +95,13 @@ export class TransaccionPrincipalComponent implements OnInit {
   constructor(
     /*Servicios*/
     private readonly transaccionService: TransaccionService,
-    private readonly sedeService: SedeService,
     private readonly clienteService: ClienteService,
     private readonly personaService: PersonaService,
     private readonly productoService: ProductoService,
     private mensajeService: MensajeService,
-    private formBuilder: FormBuilder,
+    private formBuilder: FormBuilder
   ) {
     this.codigo = 0;
-    this.codigoSede = 0;
     this.itemsRegistros = 5;
     this.page = 1;
     this.showDetail = false;
@@ -111,7 +122,25 @@ export class TransaccionPrincipalComponent implements OnInit {
       fechaInicio: new FormControl(dayjs(new Date).format("YYYY-MM-DD"), Validators.required),
       fechaFin: new FormControl(dayjs(new Date).format("YYYY-MM-DD"), Validators.required),
     });
-    this.listarTransaccionACaducarse();
+    this.obtenerParametros();
+    this.obtenerTransaccionACaducarse();
+  }
+
+  obtenerParametros() {
+    // Obtener el token para envio whatsapp
+    this.transaccionService.buscarParametroPorNemonico('token').subscribe(
+      (respuesta) => {
+        this.parametro = respuesta['objeto'];
+        this.token = this.parametro?.valorCadena;
+      }
+    )
+    // Obtener el celular para envio whatsapp
+    this.transaccionService.buscarParametroPorNemonico('celular').subscribe(
+      (respuesta) => {
+        this.parametro = respuesta['objeto'];
+        this.celular = this.parametro?.valorCadena;
+      }
+    )
   }
 
   buscarModuloPorNemonico() {
@@ -130,19 +159,30 @@ export class TransaccionPrincipalComponent implements OnInit {
     )
   }
 
+  obtenerTransaccionACaducarse = async () => {
+    this.enviarNotificacion = false;
+    await this.confirmarEnviarNotificacion();
+  }
+
   listarTransaccionACaducarse() {
-    this.transaccionService.listarTransaccionACaducarse(5).subscribe(
-      (respuesta) => {
-        this.listaTransaccion = respuesta['listado'];
-        if (this.listaTransaccion?.length > 0) {
-          this.mostrarListaTransaccion();
-          this.confirmarEnviarCorreo();
+    return new Promise((resolve, rejects) => {
+      this.transaccionService.listarTransaccionACaducarse(5).subscribe({
+        next: (respuesta) => {
+          this.listaTransaccion = respuesta['listado'];
+          if (this.listaTransaccion?.length > 0) {
+            this.mostrarListaTransaccion();
+          }
+          resolve(respuesta);
+        }, error: (error) => {
+          rejects("Error");
+          console.log("Error =", error);
         }
-      }
-    );
+      })
+    })
   }
 
   listarTransaccion() {
+    this.enviarNotificacion = false;
     this.listaTransaccion = [];
     // Receptar la descripción de formTransaccionDescripcion.value
     let transaccionDescripcionTemp = this.formTransaccionDescripcion.value;
@@ -160,7 +200,6 @@ export class TransaccionPrincipalComponent implements OnInit {
       )
     } else {
       if (this.fechaInicio?.length != 0 && this.fechaFin?.length != 0) {
-        //this.transaccionService.listarTransaccionPorRangoFechas(this.fechaInicio, this.fechaFin).subscribe(
         this.transaccionService.listarTransaccionPorRangoFechas('2023-09-21', this.fechaFin).subscribe(
           (respuesta) => {
             this.listaTransaccion = respuesta['listado'];
@@ -182,41 +221,34 @@ export class TransaccionPrincipalComponent implements OnInit {
     };
   }
 
-  mostrarListaTransaccion() {
+  mostrarListaTransaccion = async () => {
     for (const ele of this.listaTransaccion) {
       ele.colorFila = "green";
       ele.fechaInicio = dayjs(ele.fechaInicio).format("YYYY-MM-DD");
       ele.fechaFin = dayjs(ele.fechaFin).format("YYYY-MM-DD");
+      this.fechaFinMensaje = dayjs(ele.fechaFin).format("YYYY-MM-DD");
 
-      // Calcular la diferencia en dás de la fecha actual y final de la transacción
+      // Calcular la diferencia en días de la fecha actual y final de la transacción
       var diff = new Date(ele.fechaFin).getTime() - new Date(this.fechaHoy).getTime();
       var numDias = diff / (1000 * 60 * 60 * 24);
 
-      //if (ele.fechaFin <= this.fechaHoy) {
+      // ele.fechaFin <= this.fechaHoy
       if (!(numDias > 0 && numDias > 5)) {
         ele.colorFila = "red";
       }
-      // Obtener producto
-      this.productoService.buscarProductoPorCodigo(ele?.codProducto).subscribe(
-        (respuesta) => {
-          this.producto = respuesta['objeto'];
-          ele.producto = this.producto;
-        }
-      )
-      // Obtener cliente
-      this.clienteService.buscarClientePorCodigo(ele?.codCliente).subscribe(
-        (respuesta) => {
-          this.cliente = respuesta['objeto'];
-          ele.cliente = this.cliente;
-          // Obtener persona
-          this.personaService.buscarPersonaPorCodigo(ele?.cliente?.codPersona).subscribe(
-            (respuesta) => {
-              this.persona = respuesta['objeto'];
-              ele.cliente.persona = this.persona;
-            }
-          )
-        }
-      )
+
+      // Confirmar si se envia o no las Notificaciones
+      if (this.enviarNotificacion) {
+        this.enviarWhatsappApi(ele);
+      }
+    }
+
+    if (this.enviarNotificacion) {
+      if (this.seEnvioWhatsapp) {
+        this.mensajeService.mensajeCorrecto('Las notificaciones se enviaron con éxito...');
+      } else {
+        this.mensajeService.mensajeError('Error... ' + this.respuestaEnvioWhatsapp + ' ingrese nuevo token');
+      }
     }
   }
 
@@ -303,11 +335,12 @@ export class TransaccionPrincipalComponent implements OnInit {
     }
   }
 
-  confirmarEnviarCorreo() {
+  async confirmarEnviarNotificacion() {
+    this.enviarNotificacion = false;
     Swal
       .fire({
-        title: "Continuar envío Correo...",
-        text: "¿Quiere enviar el correo?'",
+        title: "Continuar envío Whatsapp...",
+        text: "¿Quiere enviar las notificaciones?'",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: "Sí, enviar",
@@ -315,10 +348,10 @@ export class TransaccionPrincipalComponent implements OnInit {
       })
       .then(async resultado => {
         if (resultado.isConfirmed) {
-          //Swal.fire('Saved!', '', 'success')
-          this.enviarCorreo();
+          this.enviarNotificacion = true;
+          this.listarTransaccionACaducarse();
         } else if (resultado.isDismissed) {
-          //Swal.fire('Changes are not saved', '', 'info')
+          console.log("No envia notificaciones");
         }
       });
   }
@@ -348,6 +381,52 @@ export class TransaccionPrincipalComponent implements OnInit {
         console.log(error);
       }
     })
+  }
+
+  async enviarWhatsapp(ele: Transaccion) {
+    this.seEnvioWhatsapp = true;
+    this.mensaje = "Estimad@: " + ele.nombreCliente + ", por recordarle que su licencia de " + ele.descripcionProducto + " finaliza el " + ele.fechaFin + " Por favor, haganos saber por éste medio de su renovación, gracias su atención.";
+    this.celularEnvioWhatsapp = this.codigoPostal + ele.celular.substring(1, 10);
+    var api = "https://script.google.com/macros/s/AKfycbyoBhxuklU5D3LTguTcYAS85klwFINHxxd-FroauC4CmFVvS0ua/exec";
+    var payload = {
+      "op": "registermessage", "token_qr": this.token, "mensajes": [
+        { "numero": this.celularEnvioWhatsapp, "mensaje": this.mensaje }
+      ]
+    };
+    console.log(payload);
+    console.log(api);
+    ajax({
+      url: api,
+      jsonp: "callback",
+      method: 'POST',
+      data: JSON.stringify(payload),
+      async: false,
+      success: function (respuestaSolicitud) {
+        this.respuestaEnvioWhatsapp = respuestaSolicitud.message;
+        //alert(respuestaSolicitud.message);
+        if (this.respuestaEnvioWhatsapp != 'Se notifico asincrono v3') {
+          this.seEnvioWhatsapp = false;
+        }
+      }
+    });
+  }
+
+  async enviarWhatsappApi(ele: Transaccion) {
+    this.seEnvioWhatsapp = true;
+    this.mensaje = "Estimad@: " + ele.nombreCliente + ", por recordarle que su licencia de " + ele.descripcionProducto + " finaliza el " + ele.fechaFin + " Por favor, haganos saber por éste medio de su renovación, gracias su atención.";
+    this.celularEnvioWhatsapp = this.codigoPostal + ele.celular.substring(1, 10);
+    console.log("celular = ", this.celularEnvioWhatsapp);
+    
+    this.transaccionService.enviarMensajeWhatsapp(this.celularEnvioWhatsapp, this.mensaje).subscribe({
+      next: async (response) => {
+        console.log("response = ", response);
+        this.mensajeService.mensajeCorrecto('Las notificaciones se enviaron con éxito...');
+      },
+      error: (error) => {
+        console.log("error = ", error);
+        this.mensajeService.mensajeError('Ha habido un problema al enviar las notificaciones ' + error);
+      }
+    });
   }
 
   /* Variables del html, para receptar datos y validaciones*/

@@ -109,7 +109,7 @@ export class VerticalMenuComponent implements OnInit, OnDestroy {
    * On Sidebar scroll set isScrolled as true
    */
   onSidebarScroll(): void {
-    if (this.directiveRef.position(true).y > 3) {
+    if (Number(this.directiveRef.position(true).y) > 3) {
       this.isScrolled = true;
     } else {
       this.isScrolled = false;

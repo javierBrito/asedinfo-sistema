@@ -126,4 +126,25 @@ export class Transaccion implements Itransaccion {
     set colorFila(value: string) {
         set(this, 'data.colorFila', value);
     }
+
+    get descripcionProducto(): string {
+        return get(this, 'data.descripcionProducto');
+    }
+    set descripcionProducto(value: string) {
+        set(this, 'data.descripcionProducto', value);
+    }
+
+    get nombreCliente(): string {
+        return get(this, 'data.nombreCliente');
+    }
+    set nombreCliente(value: string) {
+        set(this, 'data.nombreCliente', value);
+    }
+
+    get celular(): string {
+        return get(this, 'data.celular');
+    }
+    set celular(value: string) {
+        set(this, 'data.celular', value);
+    }
 }
